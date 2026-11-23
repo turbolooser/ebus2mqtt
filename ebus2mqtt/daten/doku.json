@@ -1,0 +1,326 @@
+{
+ "111-Betriebsart": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "113-Absenk-Raumtemp": {
+  "url": "https://github.com/aghulas/weishaupt-ebus/blob/main/evidence/settings-writes.md",
+  "quelle": "aghulas/weishaupt-ebus evidence/settings-writes.md: Register 08 00 RoomSetbackTemp"
+ },
+ "117-Steilheit": {
+  "url": "https://github.com/aghulas/weishaupt-ebus/blob/main/evidence/settings-writes.md",
+  "quelle": "aghulas/weishaupt-ebus evidence/settings-writes.md: Register 0e 01 GradientCurve"
+ },
+ "151-Datum": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "152-Uhrzeit": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "412-Gemischte-Aussentemperatur": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "413-Normal-Raumtemp": {
+  "url": "https://github.com/aghulas/weishaupt-ebus/blob/main/evidence/settings-writes.md",
+  "quelle": "aghulas/weishaupt-ebus evidence/settings-writes.md: Register 05 00 RoomNormalTemp"
+ },
+ "416-Soll-Temp": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "501-Reduzierbetrieb": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "Anlagenfrostschutz": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 23"
+ },
+ "Brenner-Taktsperre": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 34"
+ },
+ "Brenneranforderung-Heizung": {
+  "url": "https://github.com/jdanion/ebusd-configuration-weishaupt/blob/master/weishaupt/Documentation/f6.md",
+  "quelle": "jdanion/ebusd-configuration-weishaupt, Broadcast 500A: Status3; Bit 0x40 dort unbenannt, Zuordnung beobachtet"
+ },
+ "Flamme": {
+  "url": "https://github.com/jdanion/ebusd-configuration-weishaupt/blob/master/weishaupt/Documentation/f6.md",
+  "quelle": "jdanion/ebusd-configuration-weishaupt, Broadcast 500A: Status2 Bit4 Flamme"
+ },
+ "Frostschutztemperatur": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "Fussbodenerwaermung": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "Gasventil": {
+  "url": "https://github.com/jdanion/ebusd-configuration-weishaupt/blob/master/weishaupt/Documentation/f6.md",
+  "quelle": "jdanion/ebusd-configuration-weishaupt, Broadcast 500A: Status2 Bit5 Gasventil1"
+ },
+ "Hk1-Regelvariante": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "I10-Betriebsphase": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 10"
+ },
+ "I10-Fehler": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=92",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 92: Kap. 10.3.2 Fehlercode"
+ },
+ "I11-Laststellung": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 11"
+ },
+ "I12-Ged-Aussentemperatur": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 12"
+ },
+ "I13-Wärmeanforderung": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 13"
+ },
+ "I31-Abgastemperatur": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 31"
+ },
+ "I33-Aussentemperatur": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 33"
+ },
+ "I42-Brennerstarts": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 42 (x 1000)"
+ },
+ "I42-Schaltspiele-roh": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 42 (x 1000)"
+ },
+ "I42-Schaltspielzahl-Brenner": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 42 (x 1000) - Wert wie wcm2mqtt (Low-Byte x 1000), richtig skaliert siehe I42-Brennerstarts"
+ },
+ "I43-Betriebsstunden-Brenner": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 43 (h x 100) - Wert wie wcm2mqtt (Low-Byte x 1000), richtig skaliert siehe I43-Betriebsstunden-h"
+ },
+ "I43-Betriebsstunden-h": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 43 (h x 100)"
+ },
+ "I43-Betriebsstunden-roh": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 43 (h x 100)"
+ },
+ "Korrektur-Außenfühler": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 20"
+ },
+ "P10-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 10"
+ },
+ "P11-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 11"
+ },
+ "P12-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 12"
+ },
+ "P13-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 13"
+ },
+ "P15-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 15"
+ },
+ "P17-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 17"
+ },
+ "P21-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 21"
+ },
+ "P22-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 22"
+ },
+ "P30-Min-VL-Soll": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 30"
+ },
+ "P31-Max-VL-Soll": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 31"
+ },
+ "P33-Abgas-Abschalttemperatur": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 33"
+ },
+ "P35-Startgas": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 35"
+ },
+ "P36-Min-Leistung": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 36"
+ },
+ "P37-Max-Leistung-Heizung": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 37"
+ },
+ "P39-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 39"
+ },
+ "P40-Pumpenbetriebsart": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 40"
+ },
+ "P41-Pumpennachlauf": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 41"
+ },
+ "P42-Pumpenleistung-min": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 42"
+ },
+ "P43-Pumpenleistung-max": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 43"
+ },
+ "P70-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=56",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 56: Parameter-Ebene P 70"
+ },
+ "P72-Display": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=56",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 56: Parameter-Ebene P 72"
+ },
+ "Pumpe": {
+  "url": "https://github.com/jdanion/ebusd-configuration-weishaupt/blob/master/weishaupt/Documentation/f6.md",
+  "quelle": "jdanion/ebusd-configuration-weishaupt, Broadcast 500A: Status2 Bit7 Pumpe"
+ },
+ "Raumfrosttemperatur": {
+  "url": "https://github.com/aghulas/weishaupt-ebus/blob/main/evidence/settings-writes.md",
+  "quelle": "aghulas/weishaupt-ebus evidence/settings-writes.md: Register 14 0a RoomFrostProtectionTemp"
+ },
+ "Schaltdifferenz-VL": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=55",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 55: Parameter-Ebene P 32"
+ },
+ "So-Wi-Umschalttemperatur": {
+  "url": "https://github.com/aghulas/weishaupt-ebus/blob/main/evidence/settings-writes.md",
+  "quelle": "aghulas/weishaupt-ebus evidence/settings-writes.md: Register 16 01 SummerWinterChangeOverTemp"
+ },
+ "Sondernieveau-Heizbetrieb": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=54",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 54: Parameter-Ebene P 18"
+ },
+ "Vorlauf-Broadcast": {
+  "url": "https://github.com/jdanion/ebusd-configuration-weishaupt/blob/master/weishaupt/Documentation/f6.md",
+  "quelle": "jdanion/ebusd-configuration-weishaupt, Broadcast 500A: M11 Vorlauftemperatur (0,5 K)"
+ },
+ "Vorlauftemperatur": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=52",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 52: Info-Ebene i 30"
+ },
+ "ZP1-DI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-DO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-FR": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-MI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-MO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-SA": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP1-SO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-DI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-DO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-FR": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-MI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-MO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-SA": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP2-SO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-DI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-DO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-FR": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-MI": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-MO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-SA": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "ZP3-SO": {
+  "url": null,
+  "grund": "keine oeffentliche Beschreibung gefunden; infoNr wie wcm2mqtt (WCM-COM) hk1.json/userzeit.json"
+ },
+ "Zeit-letzte-Wartung": {
+  "url": "https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83247501_02_15.pdf#page=53",
+  "quelle": "Weishaupt Montage- und Betriebsanleitung WTC 15-A/25-A (83247501), PDF-Seite 53: Info-Ebene i 45 (h x 10)"
+ }
+}

@@ -1,0 +1,874 @@
+{
+ "components" : 
+ {
+  "111-Betriebsart" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/111-Betriebsart/set",
+   "device_class" : "enum",
+   "expire_after" : 1200,
+   "name" : "111-Betriebsart",
+   "options" : 
+   [
+    "Standby",
+    "Normal",
+    "Absenk",
+    "Sommer",
+    "Programm-1",
+    "Programm-2",
+    "Programm-3",
+    "Wie-Leitstelle"
+   ],
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "select",
+   "state_topic" : "wcm/111-Betriebsart/value",
+   "unique_id" : "111-Betriebsart"
+  },
+  "113-Absenk-Raumtemp" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/113-Absenk-Raumtemp/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "113-Absenk-Raumtemp",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/113-Absenk-Raumtemp/value",
+   "step" : 0.5,
+   "unique_id" : "113-Absenk-Raumtemp",
+   "unit_of_measurement" : "°C"
+  },
+  "117-Steilheit" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/117-Steilheit/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 40.0,
+   "min" : 2.5,
+   "name" : "117-Steilheit",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/117-Steilheit/value",
+   "step" : 0.5,
+   "unique_id" : "117-Steilheit",
+   "unit_of_measurement" : "°C"
+  },
+  "151-Datum" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/151-Datum/set",
+   "expire_after" : 1200,
+   "name" : "151-Datum",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/151-Datum/value",
+   "unique_id" : "151-Datum"
+  },
+  "152-Uhrzeit" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/152-Uhrzeit/set",
+   "expire_after" : 1200,
+   "name" : "152-Uhrzeit",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/152-Uhrzeit/value",
+   "unique_id" : "152-Uhrzeit"
+  },
+  "412-Gemischte-Aussentemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "412-Gemischte-Aussentemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/412-Gemischte-Aussentemperatur/value",
+   "unique_id" : "412-Gemischte-Aussentemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "413-Normal-Raumtemp" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/413-Normal-Raumtemp/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "413-Normal-Raumtemp",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/413-Normal-Raumtemp/value",
+   "step" : 0.5,
+   "unique_id" : "413-Normal-Raumtemp",
+   "unit_of_measurement" : "°C"
+  },
+  "416-Soll-Temp" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "416-Soll-Temp",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/416-Soll-Temp/value",
+   "unique_id" : "416-Soll-Temp",
+   "unit_of_measurement" : "°C"
+  },
+  "501-Reduzierbetrieb" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/501-Reduzierbetrieb/set",
+   "device_class" : "enum",
+   "expire_after" : 1200,
+   "name" : "501-Reduzierbetrieb",
+   "options" : 
+   [
+    "Frost",
+    "Absenk"
+   ],
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "select",
+   "state_topic" : "wcm/501-Reduzierbetrieb/value",
+   "unique_id" : "501-Reduzierbetrieb"
+  },
+  "Anlagenfrostschutz" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Anlagenfrostschutz/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 10.0,
+   "min" : -10.0,
+   "name" : "Anlagenfrostschutz",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Anlagenfrostschutz/value",
+   "step" : 1.0,
+   "unique_id" : "Anlagenfrostschutz",
+   "unit_of_measurement" : "°C"
+  },
+  "Brenner-Taktsperre" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Brenner-Taktsperre/set",
+   "expire_after" : 1200,
+   "name" : "Brenner-Taktsperre",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_topic" : "wcm/Brenner-Taktsperre/value",
+   "step" : 1.0,
+   "unique_id" : "Brenner-Taktsperre"
+  },
+  "Brenneranforderung-Heizung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Brenneranforderung-Heizung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "binary_sensor",
+   "state_topic" : "wcm/Brenneranforderung-Heizung/value",
+   "unique_id" : "Brenneranforderung-Heizung"
+  },
+  "Flamme" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Flamme",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "binary_sensor",
+   "state_topic" : "wcm/Flamme/value",
+   "unique_id" : "Flamme"
+  },
+  "Frostschutztemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "Frostschutztemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Frostschutztemperatur/value",
+   "unique_id" : "Frostschutztemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "Fussbodenerwaermung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Fussbodenerwaermung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/Fussbodenerwaermung/value",
+   "unique_id" : "Fussbodenerwaermung"
+  },
+  "Gasventil" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Gasventil",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "binary_sensor",
+   "state_topic" : "wcm/Gasventil/value",
+   "unique_id" : "Gasventil"
+  },
+  "Hk1-Regelvariante" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Hk1-Regelvariante/set",
+   "device_class" : "enum",
+   "expire_after" : 1200,
+   "name" : "Hk1-Regelvariante",
+   "options" : 
+   [
+    "Konstantvorlauf",
+    "Witterungsführung",
+    "Witterungs-Raumführung",
+    "Raumführung"
+   ],
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "select",
+   "state_topic" : "wcm/Hk1-Regelvariante/value",
+   "unique_id" : "Hk1-Regelvariante"
+  },
+  "I10-Betriebsphase" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "enum",
+   "expire_after" : 1200,
+   "name" : "I10-Betriebsphase",
+   "options" : 
+   [
+    "Brenner aus",
+    "Ruhestandskontrolle Gebläse",
+    "Vorbelüftungsdrehzahl erreichen",
+    "Vorbelüftung",
+    "Zünddrehzahl erreichen",
+    "Zündung",
+    "Brenner in Betrieb",
+    "Gasventilkontrolle",
+    "Nachbelüftungsdrehzahl erreichen und Nachbelüftung",
+    "Phase 17 (unbelegt)",
+    "Phase 18 (unbelegt)",
+    "Phase 19 (unbelegt)",
+    "Phase 20 (unbelegt)",
+    "Phase 21 (unbelegt)",
+    "Phase 22 (unbelegt)"
+   ],
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/I10-Betriebsphase/value",
+   "unique_id" : "I10-Betriebsphase"
+  },
+  "I10-Fehler" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "enum",
+   "expire_after" : 1200,
+   "name" : "I10-Fehler",
+   "options" : 
+   [
+    "fehlerfrei",
+    "Temperatur am eSTB > 105 °C",
+    "Temperatur am eSTB > 95 °C",
+    "Temperatur am eSTB steigt zu schnell an",
+    "Differenz Vorlauf- und Rücklauftemperatur zu groß",
+    "Abgastemperatur zu hoch",
+    "Differenz eSTB und Vorlauftemperatur zu groß",
+    "Keine Flammenbildung beim Brennerstart",
+    "Flammenausfall während des Betriebs",
+    "Flammenvortäuschung",
+    "Eingang H2 ist geschlossen",
+    "eSTB defekt",
+    "Abgasfühler defekt",
+    "Schaltkontakt Luftdruckwächter nicht in Ruhestellung",
+    "Außenfühler defekt",
+    "Warmwasserfühler defekt",
+    "Vorlauffühler defekt",
+    "Wasserdruck zu gering",
+    "Rücklauffühler defekt",
+    "Abgasdruckwächter fällt während der Stillstandskontrolle Gebläse nicht ab",
+    "Weichenfühler defekt",
+    "Gasventil (intern) undicht",
+    "Gebläsedrehzahl wird nicht erreicht",
+    "Gebläsestillstand fehlerhaft",
+    "Luftdruckwächter schaltet nicht",
+    "Abgasseitiger Druck zu groß",
+    "Gasdruck zu gering",
+    "Maximale Laufzeit der Abgasklappe",
+    "Eingang H2 ist geschlossen (Kondensat)",
+    "Datensatz-Fehler Kessel",
+    "Datensatz-Fehler Brenner",
+    "Spannungsversorgung bzw. Netzfrequenz außerhalb Toleranz",
+    "Elektronikfehler",
+    "Anlage wurde zu oft entriegelt",
+    "Kommunikation WCM-CPU und WCM-CUI fehlerhaft",
+    "Kommunikation zum Kaskadenmanager fehlerhaft",
+    "Kommunikation zur WCM-FS fehlerhaft",
+    "Kommunikation zu EM#2 fehlerhaft",
+    "Kommunikation zu EM#3 fehlerhaft",
+    "Kommunikation zu EM#4 fehlerhaft",
+    "Kommunikation zu EM#5 fehlerhaft",
+    "Kommunikation zu EM#6 fehlerhaft",
+    "Kommunikation zu EM#7 fehlerhaft",
+    "Kommunikation zu EM#8 fehlerhaft",
+    "Temperaturfernsteuerung (Eingang N1) fehlerhaft"
+   ],
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/I10-Fehler/value",
+   "unique_id" : "I10-Fehler"
+  },
+  "I11-Laststellung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "I11-Laststellung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/I11-Laststellung/value",
+   "unique_id" : "I11-Laststellung"
+  },
+  "I12-Ged-Aussentemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "I12-Ged-Aussentemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/I12-Ged-Aussentemperatur/value",
+   "unique_id" : "I12-Ged-Aussentemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "I13-Wärmeanforderung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "I13-Wärmeanforderung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/I13-Wärmeanforderung/value",
+   "unique_id" : "I13-Wärmeanforderung",
+   "unit_of_measurement" : "°C"
+  },
+  "I31-Abgastemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "I31-Abgastemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/I31-Abgastemperatur/value",
+   "unique_id" : "I31-Abgastemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "I33-Aussentemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "I33-Aussentemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/I33-Aussentemperatur/value",
+   "unique_id" : "I33-Aussentemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "I42-Schaltspielzahl-Brenner" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "I42-Schaltspielzahl-Brenner",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/I42-Schaltspielzahl-Brenner/value",
+   "unique_id" : "I42-Schaltspielzahl-Brenner"
+  },
+  "I43-Betriebsstunden-Brenner" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "I43-Betriebsstunden-Brenner",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/I43-Betriebsstunden-Brenner/value",
+   "unique_id" : "I43-Betriebsstunden-Brenner"
+  },
+  "Korrektur-Außenfühler" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Korrektur-Außenfühler/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 4.0,
+   "min" : -4.0,
+   "name" : "Korrektur-Außenfühler",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Korrektur-Außenfühler/value",
+   "step" : 0.5,
+   "unique_id" : "Korrektur-Außenfühler",
+   "unit_of_measurement" : "K"
+  },
+  "P30-Min-VL-Soll" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/P30-Min-VL-Soll/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 78.0,
+   "min" : 8.0,
+   "name" : "P30-Min-VL-Soll",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/P30-Min-VL-Soll/value",
+   "step" : 1.0,
+   "unique_id" : "P30-Min-VL-Soll",
+   "unit_of_measurement" : "°C"
+  },
+  "P31-Max-VL-Soll" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/P31-Max-VL-Soll/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 82.0,
+   "min" : 8.0,
+   "name" : "P31-Max-VL-Soll",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/P31-Max-VL-Soll/value",
+   "step" : 1.0,
+   "unique_id" : "P31-Max-VL-Soll",
+   "unit_of_measurement" : "°C"
+  },
+  "P37-Max-Leistung-Heizung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/P37-Max-Leistung-Heizung/set",
+   "expire_after" : 1200,
+   "name" : "P37-Max-Leistung-Heizung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_topic" : "wcm/P37-Max-Leistung-Heizung/value",
+   "step" : 1.0,
+   "unique_id" : "P37-Max-Leistung-Heizung"
+  },
+  "Pumpe" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Pumpe",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "binary_sensor",
+   "state_topic" : "wcm/Pumpe/value",
+   "unique_id" : "Pumpe"
+  },
+  "Raumfrosttemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Raumfrosttemperatur/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "Raumfrosttemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Raumfrosttemperatur/value",
+   "step" : 0.10000000000000001,
+   "unique_id" : "Raumfrosttemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "Schaltdifferenz-VL" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Schaltdifferenz-VL/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 7.0,
+   "min" : 1.0,
+   "name" : "Schaltdifferenz-VL",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Schaltdifferenz-VL/value",
+   "step" : 1.0,
+   "unique_id" : "Schaltdifferenz-VL",
+   "unit_of_measurement" : "°C"
+  },
+  "So-Wi-Umschalttemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/So-Wi-Umschalttemperatur/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "max" : 30.0,
+   "min" : -4.0,
+   "name" : "So-Wi-Umschalttemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/So-Wi-Umschalttemperatur/value",
+   "step" : 0.5,
+   "unique_id" : "So-Wi-Umschalttemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "Sondernieveau-Heizbetrieb" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/Sondernieveau-Heizbetrieb/set",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "Sondernieveau-Heizbetrieb",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "number",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Sondernieveau-Heizbetrieb/value",
+   "step" : 1.0,
+   "unique_id" : "Sondernieveau-Heizbetrieb",
+   "unit_of_measurement" : "°C"
+  },
+  "Vorlauftemperatur" : 
+  {
+   "availability_topic" : "wcm/status",
+   "device_class" : "temperature",
+   "expire_after" : 1200,
+   "name" : "Vorlauftemperatur",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_class" : "measurement",
+   "state_topic" : "wcm/Vorlauftemperatur/value",
+   "unique_id" : "Vorlauftemperatur",
+   "unit_of_measurement" : "°C"
+  },
+  "ZP1-DI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-DI/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-DI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-DI/value",
+   "unique_id" : "ZP1-DI"
+  },
+  "ZP1-DO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-DO/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-DO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-DO/value",
+   "unique_id" : "ZP1-DO"
+  },
+  "ZP1-FR" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-FR/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-FR",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-FR/value",
+   "unique_id" : "ZP1-FR"
+  },
+  "ZP1-MI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-MI/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-MI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-MI/value",
+   "unique_id" : "ZP1-MI"
+  },
+  "ZP1-MO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-MO/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-MO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-MO/value",
+   "unique_id" : "ZP1-MO"
+  },
+  "ZP1-SA" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-SA/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-SA",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-SA/value",
+   "unique_id" : "ZP1-SA"
+  },
+  "ZP1-SO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP1-SO/set",
+   "expire_after" : 1200,
+   "name" : "ZP1-SO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP1-SO/value",
+   "unique_id" : "ZP1-SO"
+  },
+  "ZP2-DI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-DI/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-DI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-DI/value",
+   "unique_id" : "ZP2-DI"
+  },
+  "ZP2-DO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-DO/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-DO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-DO/value",
+   "unique_id" : "ZP2-DO"
+  },
+  "ZP2-FR" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-FR/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-FR",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-FR/value",
+   "unique_id" : "ZP2-FR"
+  },
+  "ZP2-MI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-MI/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-MI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-MI/value",
+   "unique_id" : "ZP2-MI"
+  },
+  "ZP2-MO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-MO/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-MO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-MO/value",
+   "unique_id" : "ZP2-MO"
+  },
+  "ZP2-SA" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-SA/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-SA",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-SA/value",
+   "unique_id" : "ZP2-SA"
+  },
+  "ZP2-SO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP2-SO/set",
+   "expire_after" : 1200,
+   "name" : "ZP2-SO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP2-SO/value",
+   "unique_id" : "ZP2-SO"
+  },
+  "ZP3-DI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-DI/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-DI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-DI/value",
+   "unique_id" : "ZP3-DI"
+  },
+  "ZP3-DO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-DO/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-DO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-DO/value",
+   "unique_id" : "ZP3-DO"
+  },
+  "ZP3-FR" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-FR/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-FR",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-FR/value",
+   "unique_id" : "ZP3-FR"
+  },
+  "ZP3-MI" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-MI/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-MI",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-MI/value",
+   "unique_id" : "ZP3-MI"
+  },
+  "ZP3-MO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-MO/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-MO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-MO/value",
+   "unique_id" : "ZP3-MO"
+  },
+  "ZP3-SA" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-SA/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-SA",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-SA/value",
+   "unique_id" : "ZP3-SA"
+  },
+  "ZP3-SO" : 
+  {
+   "availability_topic" : "wcm/status",
+   "command_topic" : "wcm/ZP3-SO/set",
+   "expire_after" : 1200,
+   "name" : "ZP3-SO",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/ZP3-SO/value",
+   "unique_id" : "ZP3-SO"
+  },
+  "Zeit-letzte-Wartung" : 
+  {
+   "availability_topic" : "wcm/status",
+   "expire_after" : 1200,
+   "name" : "Zeit-letzte-Wartung",
+   "payload_available" : "query OK",
+   "payload_not_available" : "offline",
+   "platform" : "sensor",
+   "state_topic" : "wcm/Zeit-letzte-Wartung/value",
+   "unique_id" : "Zeit-letzte-Wartung"
+  }
+ },
+ "device" : 
+ {
+  "identifiers" : 
+  [
+   "wcm"
+  ],
+  "manufacturer" : "Weishaupt",
+  "name" : "WCM-COM"
+ },
+ "origin" : 
+ {
+  "name" : "WCM-COM",
+  "sw" : "2.0.0"
+ }
+}

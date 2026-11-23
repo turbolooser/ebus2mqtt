@@ -1,0 +1,33 @@
+# Example stack. Pin the images to a tag (and ideally a digest) instead of "main" in production.
+services:
+  ebusd:
+    image: ghcr.io/turbolooser/ebus2mqtt-ebusd:main
+    restart: unless-stopped
+    environment:
+      - EBUSD_DEVICE=${EBUS_DEVICE}
+      - EBUSD_ADDRESS=${EBUS_ADRESSE:-31}
+      - EBUSD_MQTTHOST=${MQTT_HOST}
+      - EBUSD_MQTTPORT=${MQTT_PORT:-1883}
+      - EBUSD_MQTTUSER=${MQTT_USER}
+      - EBUSD_MQTTPASS=${MQTT_PASSWORD}
+      - EBUSD_MQTTTOPIC=ebusd/%circuit/%name
+      - EBUSD_MQTTJSON=
+    # port 8888 stays inside the compose network (ebusd runs with --enablehex)
+
+  ebus-bridge:
+    image: ghcr.io/turbolooser/ebus2mqtt-bridge:main
+    restart: unless-stopped
+    depends_on:
+      - ebusd
+    ports:
+      - "8097:8097"
+    environment:
+      - EBUSD_HOST=ebusd
+      - EBUS_ADRESSE=${EBUS_ADRESSE:-31}
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_PORT=${MQTT_PORT:-1883}
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - MQTT_PREFIX=${MQTT_PREFIX:-wcm}
+      - HA_DISCOVERY_PREFIX=${HA_DISCOVERY_PREFIX:-homeassistant}
+      - KUMA_PUSH_URL=${KUMA_PUSH_URL:-}

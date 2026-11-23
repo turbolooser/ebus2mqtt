@@ -1,0 +1,308 @@
+{
+ "ErrorCodes": [
+  {
+   "code": 0,
+   "text": "fehlerfrei"
+  },
+  {
+   "code": 11,
+   "text": "Temperatur am eSTB > 105 °C"
+  },
+  {
+   "code": 12,
+   "text": "Temperatur am eSTB > 95 °C"
+  },
+  {
+   "code": 14,
+   "text": "Temperatur am eSTB steigt zu schnell an"
+  },
+  {
+   "code": 15,
+   "text": "Differenz Vorlauf- und Rücklauftemperatur zu groß"
+  },
+  {
+   "code": 16,
+   "text": "Abgastemperatur zu hoch"
+  },
+  {
+   "code": 18,
+   "text": "Differenz eSTB und Vorlauftemperatur zu groß"
+  },
+  {
+   "code": 21,
+   "text": "Keine Flammenbildung beim Brennerstart"
+  },
+  {
+   "code": 22,
+   "text": "Flammenausfall während des Betriebs"
+  },
+  {
+   "code": 23,
+   "text": "Flammenvortäuschung"
+  },
+  {
+   "code": 24,
+   "text": "Eingang H2 ist geschlossen"
+  },
+  {
+   "code": 30,
+   "text": "eSTB defekt"
+  },
+  {
+   "code": 31,
+   "text": "Abgasfühler defekt"
+  },
+  {
+   "code": 32,
+   "text": "Schaltkontakt Luftdruckwächter nicht in Ruhestellung"
+  },
+  {
+   "code": 33,
+   "text": "Außenfühler defekt"
+  },
+  {
+   "code": 34,
+   "text": "Warmwasserfühler defekt"
+  },
+  {
+   "code": 35,
+   "text": "Vorlauffühler defekt"
+  },
+  {
+   "code": 36,
+   "text": "Wasserdruck zu gering"
+  },
+  {
+   "code": 37,
+   "text": "Rücklauffühler defekt"
+  },
+  {
+   "code": 38,
+   "text": "Abgasdruckwächter fällt während der Stillstandskontrolle Gebläse nicht ab"
+  },
+  {
+   "code": 39,
+   "text": "Weichenfühler defekt"
+  },
+  {
+   "code": 41,
+   "text": "Gasventil (intern) undicht"
+  },
+  {
+   "code": 43,
+   "text": "Gebläsedrehzahl wird nicht erreicht"
+  },
+  {
+   "code": 44,
+   "text": "Gebläsestillstand fehlerhaft"
+  },
+  {
+   "code": 45,
+   "text": "Luftdruckwächter schaltet nicht"
+  },
+  {
+   "code": 46,
+   "text": "Abgasseitiger Druck zu groß"
+  },
+  {
+   "code": 47,
+   "text": "Gasdruck zu gering"
+  },
+  {
+   "code": 48,
+   "text": "Maximale Laufzeit der Abgasklappe"
+  },
+  {
+   "code": 49,
+   "text": "Eingang H2 ist geschlossen (Kondensat)"
+  },
+  {
+   "code": 51,
+   "text": "Datensatz-Fehler Kessel"
+  },
+  {
+   "code": 52,
+   "text": "Datensatz-Fehler Brenner"
+  },
+  {
+   "code": 53,
+   "text": "Spannungsversorgung bzw. Netzfrequenz außerhalb Toleranz"
+  },
+  {
+   "code": 54,
+   "text": "Elektronikfehler"
+  },
+  {
+   "code": 55,
+   "text": "Anlage wurde zu oft entriegelt"
+  },
+  {
+   "code": 57,
+   "text": "Kommunikation WCM-CPU und WCM-CUI fehlerhaft"
+  },
+  {
+   "code": 80,
+   "text": "Kommunikation zum Kaskadenmanager fehlerhaft"
+  },
+  {
+   "code": 81,
+   "text": "Kommunikation zur WCM-FS fehlerhaft"
+  },
+  {
+   "code": 82,
+   "text": "Kommunikation zu EM#2 fehlerhaft"
+  },
+  {
+   "code": 83,
+   "text": "Kommunikation zu EM#3 fehlerhaft"
+  },
+  {
+   "code": 84,
+   "text": "Kommunikation zu EM#4 fehlerhaft"
+  },
+  {
+   "code": 85,
+   "text": "Kommunikation zu EM#5 fehlerhaft"
+  },
+  {
+   "code": 86,
+   "text": "Kommunikation zu EM#6 fehlerhaft"
+  },
+  {
+   "code": 87,
+   "text": "Kommunikation zu EM#7 fehlerhaft"
+  },
+  {
+   "code": 88,
+   "text": "Kommunikation zu EM#8 fehlerhaft"
+  },
+  {
+   "code": 89,
+   "text": "Temperaturfernsteuerung (Eingang N1) fehlerhaft"
+  }
+ ],
+ "HzZustand": [
+  {
+   "code": 0,
+   "text": "Brenner aus"
+  },
+  {
+   "code": 1,
+   "text": "Ruhestandskontrolle Gebläse"
+  },
+  {
+   "code": 2,
+   "text": "Vorbelüftungsdrehzahl erreichen"
+  },
+  {
+   "code": 3,
+   "text": "Vorbelüftung"
+  },
+  {
+   "code": 4,
+   "text": "Zünddrehzahl erreichen"
+  },
+  {
+   "code": 5,
+   "text": "Zündung"
+  },
+  {
+   "code": 6,
+   "text": "Brenner in Betrieb"
+  },
+  {
+   "code": 7,
+   "text": "Gasventilkontrolle"
+  },
+  {
+   "code": 8,
+   "text": "Nachbelüftungsdrehzahl erreichen und Nachbelüftung"
+  },
+  {
+   "code": 17,
+   "text": "Phase 17 (unbelegt)"
+  },
+  {
+   "code": 18,
+   "text": "Phase 18 (unbelegt)"
+  },
+  {
+   "code": 19,
+   "text": "Phase 19 (unbelegt)"
+  },
+  {
+   "code": 20,
+   "text": "Phase 20 (unbelegt)"
+  },
+  {
+   "code": 21,
+   "text": "Phase 21 (unbelegt)"
+  },
+  {
+   "code": 22,
+   "text": "Phase 22 (unbelegt)"
+  }
+ ],
+ "Program": [
+  {
+   "code": 1,
+   "text": "Standby"
+  },
+  {
+   "code": 11,
+   "text": "Programm-1"
+  },
+  {
+   "code": 12,
+   "text": "Programm-2"
+  },
+  {
+   "code": 13,
+   "text": "Programm-3"
+  },
+  {
+   "code": 255,
+   "text": "Wie-Leitstelle"
+  },
+  {
+   "code": 3,
+   "text": "Normal"
+  },
+  {
+   "code": 4,
+   "text": "Absenk"
+  },
+  {
+   "code": 5,
+   "text": "Sommer"
+  }
+ ],
+ "Reduzierbetrieb": [
+  {
+   "code": 0,
+   "text": "Frost"
+  },
+  {
+   "code": 1,
+   "text": "Absenk"
+  }
+ ],
+ "Regelvariante": [
+  {
+   "code": 0,
+   "text": "Konstantvorlauf"
+  },
+  {
+   "code": 1,
+   "text": "Witterungsführung"
+  },
+  {
+   "code": 2,
+   "text": "Witterungs-Raumführung"
+  },
+  {
+   "code": 3,
+   "text": "Raumführung"
+  }
+ ]
+}

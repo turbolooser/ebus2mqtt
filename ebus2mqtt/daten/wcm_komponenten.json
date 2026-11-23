@@ -1,0 +1,407 @@
+{
+ "111-Betriebsart": {
+  "_schreibbar": true,
+  "device_class": "enum",
+  "options": [
+   "Standby",
+   "Normal",
+   "Absenk",
+   "Sommer",
+   "Programm-1",
+   "Programm-2",
+   "Programm-3",
+   "Wie-Leitstelle"
+  ],
+  "platform": "select"
+ },
+ "113-Absenk-Raumtemp": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.5,
+  "unit_of_measurement": "°C"
+ },
+ "117-Steilheit": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 40.0,
+  "min": 2.5,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.5,
+  "unit_of_measurement": "°C"
+ },
+ "151-Datum": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "152-Uhrzeit": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "412-Gemischte-Aussentemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "413-Normal-Raumtemp": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.5,
+  "unit_of_measurement": "°C"
+ },
+ "416-Soll-Temp": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "501-Reduzierbetrieb": {
+  "_schreibbar": true,
+  "device_class": "enum",
+  "options": [
+   "Frost",
+   "Absenk"
+  ],
+  "platform": "select"
+ },
+ "Anlagenfrostschutz": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 10.0,
+  "min": -10.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 1.0,
+  "unit_of_measurement": "°C"
+ },
+ "Brenner-Taktsperre": {
+  "_schreibbar": true,
+  "platform": "number",
+  "step": 1.0
+ },
+ "Brenneranforderung-Heizung": {
+  "_schreibbar": false,
+  "platform": "binary_sensor"
+ },
+ "Flamme": {
+  "_schreibbar": false,
+  "platform": "binary_sensor"
+ },
+ "Frostschutztemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "Fussbodenerwaermung": {
+  "_schreibbar": false,
+  "platform": "sensor"
+ },
+ "Gasventil": {
+  "_schreibbar": false,
+  "platform": "binary_sensor"
+ },
+ "Hk1-Regelvariante": {
+  "_schreibbar": true,
+  "device_class": "enum",
+  "options": [
+   "Konstantvorlauf",
+   "Witterungsführung",
+   "Witterungs-Raumführung",
+   "Raumführung"
+  ],
+  "platform": "select"
+ },
+ "I10-Betriebsphase": {
+  "_schreibbar": false,
+  "device_class": "enum",
+  "options": [
+   "Brenner aus",
+   "Ruhestandskontrolle Gebläse",
+   "Vorbelüftungsdrehzahl erreichen",
+   "Vorbelüftung",
+   "Zünddrehzahl erreichen",
+   "Zündung",
+   "Brenner in Betrieb",
+   "Gasventilkontrolle",
+   "Nachbelüftungsdrehzahl erreichen und Nachbelüftung",
+   "Phase 17 (unbelegt)",
+   "Phase 18 (unbelegt)",
+   "Phase 19 (unbelegt)",
+   "Phase 20 (unbelegt)",
+   "Phase 21 (unbelegt)",
+   "Phase 22 (unbelegt)"
+  ],
+  "platform": "sensor"
+ },
+ "I10-Fehler": {
+  "_schreibbar": false,
+  "device_class": "enum",
+  "options": [
+   "fehlerfrei",
+   "Temperatur am eSTB > 105 °C",
+   "Temperatur am eSTB > 95 °C",
+   "Temperatur am eSTB steigt zu schnell an",
+   "Differenz Vorlauf- und Rücklauftemperatur zu groß",
+   "Abgastemperatur zu hoch",
+   "Differenz eSTB und Vorlauftemperatur zu groß",
+   "Keine Flammenbildung beim Brennerstart",
+   "Flammenausfall während des Betriebs",
+   "Flammenvortäuschung",
+   "Eingang H2 ist geschlossen",
+   "eSTB defekt",
+   "Abgasfühler defekt",
+   "Schaltkontakt Luftdruckwächter nicht in Ruhestellung",
+   "Außenfühler defekt",
+   "Warmwasserfühler defekt",
+   "Vorlauffühler defekt",
+   "Wasserdruck zu gering",
+   "Rücklauffühler defekt",
+   "Abgasdruckwächter fällt während der Stillstandskontrolle Gebläse nicht ab",
+   "Weichenfühler defekt",
+   "Gasventil (intern) undicht",
+   "Gebläsedrehzahl wird nicht erreicht",
+   "Gebläsestillstand fehlerhaft",
+   "Luftdruckwächter schaltet nicht",
+   "Abgasseitiger Druck zu groß",
+   "Gasdruck zu gering",
+   "Maximale Laufzeit der Abgasklappe",
+   "Eingang H2 ist geschlossen (Kondensat)",
+   "Datensatz-Fehler Kessel",
+   "Datensatz-Fehler Brenner",
+   "Spannungsversorgung bzw. Netzfrequenz außerhalb Toleranz",
+   "Elektronikfehler",
+   "Anlage wurde zu oft entriegelt",
+   "Kommunikation WCM-CPU und WCM-CUI fehlerhaft",
+   "Kommunikation zum Kaskadenmanager fehlerhaft",
+   "Kommunikation zur WCM-FS fehlerhaft",
+   "Kommunikation zu EM#2 fehlerhaft",
+   "Kommunikation zu EM#3 fehlerhaft",
+   "Kommunikation zu EM#4 fehlerhaft",
+   "Kommunikation zu EM#5 fehlerhaft",
+   "Kommunikation zu EM#6 fehlerhaft",
+   "Kommunikation zu EM#7 fehlerhaft",
+   "Kommunikation zu EM#8 fehlerhaft",
+   "Temperaturfernsteuerung (Eingang N1) fehlerhaft"
+  ],
+  "platform": "sensor"
+ },
+ "I11-Laststellung": {
+  "_schreibbar": false,
+  "platform": "sensor"
+ },
+ "I12-Ged-Aussentemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "I13-Wärmeanforderung": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "I31-Abgastemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "I33-Aussentemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "I42-Schaltspielzahl-Brenner": {
+  "_schreibbar": false,
+  "platform": "sensor"
+ },
+ "I43-Betriebsstunden-Brenner": {
+  "_schreibbar": false,
+  "platform": "sensor"
+ },
+ "Korrektur-Außenfühler": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 4.0,
+  "min": -4.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.5,
+  "unit_of_measurement": "K"
+ },
+ "P30-Min-VL-Soll": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 78.0,
+  "min": 8.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 1.0,
+  "unit_of_measurement": "°C"
+ },
+ "P31-Max-VL-Soll": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 82.0,
+  "min": 8.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 1.0,
+  "unit_of_measurement": "°C"
+ },
+ "P37-Max-Leistung-Heizung": {
+  "_schreibbar": true,
+  "platform": "number",
+  "step": 1.0
+ },
+ "Pumpe": {
+  "_schreibbar": false,
+  "platform": "binary_sensor"
+ },
+ "Raumfrosttemperatur": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.1,
+  "unit_of_measurement": "°C"
+ },
+ "Schaltdifferenz-VL": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 7.0,
+  "min": 1.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 1.0,
+  "unit_of_measurement": "°C"
+ },
+ "So-Wi-Umschalttemperatur": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "max": 30.0,
+  "min": -4.0,
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 0.5,
+  "unit_of_measurement": "°C"
+ },
+ "Sondernieveau-Heizbetrieb": {
+  "_schreibbar": true,
+  "device_class": "temperature",
+  "platform": "number",
+  "state_class": "measurement",
+  "step": 1.0,
+  "unit_of_measurement": "°C"
+ },
+ "Vorlauftemperatur": {
+  "_schreibbar": false,
+  "device_class": "temperature",
+  "platform": "sensor",
+  "state_class": "measurement",
+  "unit_of_measurement": "°C"
+ },
+ "ZP1-DI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-DO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-FR": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-MI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-MO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-SA": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP1-SO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-DI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-DO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-FR": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-MI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-MO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-SA": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP2-SO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-DI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-DO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-FR": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-MI": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-MO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-SA": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "ZP3-SO": {
+  "_schreibbar": true,
+  "platform": "sensor"
+ },
+ "Zeit-letzte-Wartung": {
+  "_schreibbar": false,
+  "platform": "sensor"
+ }
+}

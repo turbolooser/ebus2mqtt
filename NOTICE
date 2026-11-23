@@ -1,0 +1,17 @@
+ebus2mqtt — eBUS bridge for Weishaupt WTC 15-A/25-A with WCM-FS
+Licensed under the GNU General Public License v3.0 or later (see LICENSE).
+
+This project builds on, and partly contains material derived from, the following GPL-3.0 projects:
+
+- WcmToMqtt (Uli Eckhardt), https://git.uli-eckhardt.de/WcmToMqtt
+  ebus2mqtt/daten/maps.json is copied unchanged (subset of config/maps.json); the value formatting in
+  ebus2mqtt/wandler.py reimplements its converters; the topic and discovery layout follow it.
+- aghulas/weishaupt-ebus, https://github.com/aghulas/weishaupt-ebus
+  Register check byte (CRC-8, polynomial 0x5C), register write format 50 23, EEPROM read format 50 00
+  (evidence/register-crc.md, register-write-crc.md, write-methods.md, bc-installer-parameters.md).
+- jdanion/ebusd-configuration-weishaupt, https://github.com/jdanion/ebusd-configuration-weishaupt
+  Layout of the 50 0A broadcast (weishaupt/Documentation/f6.md).
+- ebusd (John Baier), https://github.com/john30/ebusd — used unchanged as container base image.
+
+tests/daten/ holds values captured from one real installation (WTC 25-A, 23 Nov 2026) for the conversion tests.
+Weishaupt is a trademark of its owner; this project is not affiliated with or endorsed by Weishaupt.
