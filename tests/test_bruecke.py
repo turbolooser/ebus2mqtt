@@ -207,6 +207,78 @@ def test_set_erfolg_erst_bei_passendem_rueckwert(br, monkeypatch):
     assert "!=" in json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["grund"]
 
 
+def test_set_ueberbrueckt_verbindungsluecke(br):
+    # Adapter/ebusd kurz weg (transport closed, ~5 s): ERR beim Schreiben -> warten, wiederholen, Ruecklesen entscheidet
+    from ebus2mqtt.schreiben import BusFehler
+    pausen, versuche = [], []
+    br.schlaf = pausen.append
+
+    def schreiber(r, text):
+        versuche.append(text)
+        if len(versuche) < 3:
+            raise BusFehler("035004021e2a: ERR: no signal") if len(versuche) == 1 else OSError("ebusd weg")
+        br.befehl.roh[("slot", 0x1e)] = int(float(text))
+
+    br.schreiber = schreiber
+    assert br.set_befehl("P30-Min-VL-Soll", "42") is True
+    assert len(versuche) == 3 and pausen[:2] == [2, 4]
+    assert json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["ok"] is True
+    # dauerhaft weg: nach set_versuche aufgeben, mit Grund
+    versuche.clear()
+    br.schreiber = lambda r, text: (_ for _ in ()).throw(BusFehler("ERR: no signal"))
+    assert br.set_befehl("P30-Min-VL-Soll", "43") is False
+    assert "nach 4 Versuchen" in json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["grund"]
+    # Pruef-/Wertfehler (keine Busluecke) wird nicht wiederholt
+    from ebus2mqtt.schreiben import SchreibFehler
+    n = len(pausen)
+    br.schreiber = lambda r, text: (_ for _ in ()).throw(SchreibFehler("ausserhalb"))
+    assert br.set_befehl("P30-Min-VL-Soll", "44") is False and len(pausen) == n
+
+
+def test_sets_laufen_nacheinander(br):
+    import threading
+    br.schlaf = lambda s: None
+    gleichzeitig, aktiv = [], [0]
+
+    def schreiber(r, text):
+        aktiv[0] += 1
+        gleichzeitig.append(aktiv[0])
+        import time as _t
+        _t.sleep(0.05)
+        br.befehl.roh[("slot", 0x1e if r["name"].startswith("P30") else 0x1f)] = int(float(text))
+        aktiv[0] -= 1
+
+    br.schreiber = schreiber
+    t = [threading.Thread(target=br.set_befehl, args=a) for a in (("P30-Min-VL-Soll", "42"), ("P31-Max-VL-Soll", "45"))]
+    [x.start() for x in t]
+    [x.join() for x in t]
+    assert max(gleichzeitig) == 1
+
+
+def test_lesen_gedrosselt_kurzer_takt_zuerst(br):
+    br.lesen_pro_runde = 2
+    br.befehl.anfragen.clear()
+    br.runde()
+    erste = [n for n in br.befehl.anfragen if not n[1].startswith("Fachmann")]
+    assert len(erste) == 2                                    # kein Burst
+    schnell = {Q.ebusd_adresse(s)[:2] for s in br._takte["schnell"]}
+    assert set(erste) <= schnell                              # Live-Werte vor Einstellwerten
+    gesamt = sum(len(v) for v in br._takte.values())
+    for _ in range(gesamt):                                   # die Schlange laeuft leer, nichts doppelt
+        br.runde()
+    assert not br._schlange and not br._in_schlange
+    assert len([n for n in br.befehl.anfragen if not n[1].startswith("Fachmann")]) == gesamt
+
+
+def test_nach_start_keine_offline_welle(br):
+    # gedrosseltes Lesen: ungelesene Werte gelten bis FAKTOR x iv ab Start nicht als haengend
+    br.verfuegbarkeit()
+    assert br.mqtt.letzter("wcm/P30-Min-VL-Soll/available") == "online"
+    br.uhr_obj.t += 3 * 180 + 1
+    br.verfuegbarkeit()
+    assert br.mqtt.letzter("wcm/P30-Min-VL-Soll/available") == "offline"
+
+
 def test_csv_im_repo_gleich_katalog():
     with open(os.path.join(HIER, "..", "ebusd", "csv", "wtc25.csv"), encoding="utf-8") as f:
         assert f.read() == csv_text(), "tools/gen_csv.py ausfuehren"

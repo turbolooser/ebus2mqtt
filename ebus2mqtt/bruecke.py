@@ -10,6 +10,7 @@ Topics je Reading (Prefix wie wcm2mqtt, Vorgabe "wcm"):
   <p>/_roh/<quelle>     Rohwerte der unbelegten Kandidaten (nicht retained), fuer tools/vergleich.py
 Dazu STATUS_TOPIC (Vorgabe ebus2mqtt/status): JSON mit Alter, Fehlern, verlorenen Arbitrierungen.
 """
+import heapq
 import json
 import logging
 import os
@@ -93,12 +94,19 @@ def pruefe_set(komp, text):
 class Bruecke:
     def __init__(self, befehl, mqtt, prefix="wcm", status_topic="ebus2mqtt/status", disc_prefix="homeassistant",
                  roh=True, kuma_url="", herzdatei="/tmp/ebus2mqtt.herz", schreiber=None, uhr=time.time,
-                 verfuegbar_topic=None, auslassen=(), ungesund_ende_s=600):
+                 verfuegbar_topic=None, auslassen=(), ungesund_ende_s=600, lesen_pro_runde=None,
+                 set_versuche=4, schlaf=None):
         self.befehl, self.mqtt, self.prefix = befehl, mqtt, prefix
         # Docker startet einen unhealthy Container nicht neu: nach so langer Ungesundheit beendet sich die
         # Bruecke selbst (exit 1), restart: unless-stopped startet sie frisch. 0 = nie beenden.
         self.ungesund_ende_s = ungesund_ende_s
         self.ungesund_seit = None
+        # Lesen ohne Bursts: faellige Schluessel in eine Warteschlange (kurzer Takt zuerst), je runde() hoechstens
+        # lesen_pro_runde davon (None = alle). Sets laufen einzeln (set_lock) und wiederholen Bus-/Verbindungsfehler.
+        self.lesen_pro_runde, self.set_versuche = lesen_pro_runde, set_versuche
+        self.schlaf = schlaf or (lambda s: time.sleep(s))
+        self._schlange, self._in_schlange, self._nr = [], set(), 0
+        self.set_lock = threading.Lock()
         self.status_topic, self.disc_prefix, self.roh_an = status_topic, disc_prefix, roh
         self.kuma_url, self.herzdatei, self.uhr = kuma_url, herzdatei, uhr
         # schreiber(reading, text) -> None, wirft bei Fehler; nur fuer Readings in katalog.SCHREIBEN
@@ -266,7 +274,15 @@ class Bruecke:
                 continue
             self.faellig[takt] = jetzt + K.TAKT[takt]
             for sch in liste:
-                self.lese(sch)
+                if sch not in self._in_schlange:
+                    self._in_schlange.add(sch)
+                    self._nr += 1
+                    heapq.heappush(self._schlange, (K.TAKT[takt], self._nr, sch))
+        n = len(self._schlange) if self.lesen_pro_runde is None else self.lesen_pro_runde
+        for _ in range(min(n, len(self._schlange))):
+            sch = heapq.heappop(self._schlange)[2]
+            self._in_schlange.discard(sch)
+            self.lese(sch)
         if self.faellig.get("eeprom", 0) <= jetzt:
             self.faellig["eeprom"] = jetzt + K.TAKT["eeprom"]
             self.eeprom()
@@ -276,7 +292,8 @@ class Bruecke:
         jetzt = self.uhr()
         for r in self.aktiv:
             n = r["name"]
-            ok = n in self.frisch and jetzt - self.frisch[n] <= FAKTOR * self.iv(r)
+            # noch nie gelesen: dieselbe Frist ab Start (gedrosseltes Lesen braucht nach dem Start etwas)
+            ok = jetzt - self.frisch.get(n, self.start) <= FAKTOR * self.iv(r)
             if self.verfuegbar.get(n) != ok:
                 self.verfuegbar[n] = ok
                 self.mqtt.publish(f"{self.prefix}/{n}/available", "online" if ok else "offline", retain=True)
@@ -356,17 +373,32 @@ class Bruecke:
             return self._set_antwort(name, False, grund)
         if self.schreiber is None:
             return self._set_antwort(name, False, "Schreiben gesperrt: kein Schreiber konfiguriert")
-        try:
-            self.schreiber(r, text)
-        except Exception as e:  # noqa: BLE001 - jeder Fehler des Schreibwegs geht als Antwort raus
-            return self._set_antwort(name, False, f"Schreiben fehlgeschlagen: {e}")
+        with self.set_lock:
+            return self._schreiben_und_pruefen(name, r, text)
+
+    def _schreiben_und_pruefen(self, name, r, text):
+        warte = 2
+        for versuch in range(1, self.set_versuche + 1):
+            try:
+                self.schreiber(r, text)
+                break
+            except (S.BusFehler, OSError) as e:
+                # Luecke am Bus/Adapter (ERR, Socket weg): warten und wiederholen, kein Set geht verloren
+                self._fehler(f"set {name}: {e}")
+                if versuch == self.set_versuche:
+                    return self._set_antwort(name, False, f"Schreiben fehlgeschlagen nach {versuch} Versuchen: {e}")
+                LOG.warning("set %s: Versuch %s fehlgeschlagen (%s), neu in %s s", name, versuch, e, warte)
+                self.schlaf(warte)
+                warte *= 2
+            except Exception as e:  # noqa: BLE001 - jeder andere Fehler des Schreibwegs geht als Antwort raus
+                return self._set_antwort(name, False, f"Schreiben fehlgeschlagen: {e}")
         soll = S.soll_text(name, text)
         for _ in range(6):
             for sch in Q.schluessel(r["quelle"]):
                 self.lese(sch)
             if self.letzter.get(name) is not None and _gleich(self.letzter[name], soll):
                 return self._set_antwort(name, True, f"Rueckwert {self.letzter[name]}")
-            time.sleep(5)
+            self.schlaf(5)
         return self._set_antwort(name, False, f"Rueckwert {self.letzter.get(name)} != {soll}")
 
     def _set_antwort(self, name, ok, grund):

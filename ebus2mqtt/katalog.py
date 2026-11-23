@@ -129,7 +129,10 @@ def schreibbar(adresse):
     return list(SCHREIBEN) if adresse.lower() == "ff" else list(SCHREIBEN_BEI_31)
 
 # ---------------------------------------------------------------- Takte (s)
-TAKT = {"schnell": 60, "param": 180, "hk": 300, "zeit": 300, "display": 900, "eeprom": 900, "kandidat": 180}
+# Einstellwerte (hk, Zeitprogramme) aendern sich selten und werden nach jedem eigenen Set ohnehin zurueckgelesen:
+# 600 s. Alle HA-Werte bleiben unter expire_after 1200 s. Rohkandidaten (nur Forschung, keine Entitaet): 900 s.
+# Gemessen 23.11.2026: ~2050 Bus-Lesungen/h mit 300/300/180, ~1170/h mit diesen Takten.
+TAKT = {"schnell": 60, "param": 180, "hk": 600, "zeit": 600, "display": 900, "eeprom": 900, "kandidat": 900}
 
 # ---------------------------------------------------------------- Readings
 # Felder: name (= Topic + unique_id wie wcm2mqtt), quelle, wandel, takt (iv in fresh), neu (nicht in wcm2mqtt)

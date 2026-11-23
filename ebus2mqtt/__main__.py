@@ -79,7 +79,8 @@ def main():
                 kuma_url=env("KUMA_PUSH_URL"), herzdatei=env("HERZDATEI", "/tmp/ebus2mqtt.herz"),
                 schreiber=ebusd_schreiber(befehl) if env("SET_AKTIV", "1") == "1" else None,
                 verfuegbar_topic=verfuegbar, auslassen=auslassen,
-                ungesund_ende_s=int(env("UNGESUND_ENDE_S", "600")))
+                ungesund_ende_s=int(env("UNGESUND_ENDE_S", "600")),
+                lesen_pro_runde=int(env("LESEN_PRO_S", "2")) or None)
     halter["b"] = b
     abos = [f"{prefix}/{n}/value" for n in auslassen]   # nur zur Anzeige im Web-Frontend
     if env("SET_AKTIV", "1") == "1":
