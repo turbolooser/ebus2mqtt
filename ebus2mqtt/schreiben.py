@@ -18,6 +18,10 @@ class SchreibFehler(Exception):
     pass
 
 
+class BusFehler(SchreibFehler):
+    """ebusd hat das Telegramm nicht durchbekommen (ERR-Antwort): voruebergehend, die Bruecke wiederholt."""
+
+
 def _zahl(text):
     try:
         return float(text)
@@ -110,5 +114,5 @@ def ebusd_schreiber(befehl):
             antwort = befehl.anfrage(f"hex {tel}")
             erste = antwort[0].strip() if antwort else ""
             if not erste or erste.startswith("ERR"):
-                raise SchreibFehler(f"{tel}: {erste or 'leere Antwort'}")
+                raise BusFehler(f"{tel}: {erste or 'leere Antwort'}")
     return schreiben

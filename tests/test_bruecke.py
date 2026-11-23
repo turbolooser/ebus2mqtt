@@ -154,6 +154,30 @@ def test_status_zaehlt_arbitrierung_und_gesundheit(br):
     assert br.mqtt.letzter("wcm/status") == "offline"
 
 
+def test_dauerhaft_ungesund_beendet_bruecke(br):
+    # Docker startet unhealthy Container nicht neu: nach ungesund_ende_s (600 s) ohne Gesundung -> aufgeben()
+    br.runde()
+    assert br.herzschlag()["ungesund_s"] == 0 and br.aufgeben() is False
+    br.befehl.info = lambda: {"signal": "lost"}
+    br.uhr_obj.t += 30
+    assert br.herzschlag()["gesund"] is False and br.aufgeben() is False
+    br.uhr_obj.t += 599
+    assert br.herzschlag()["ungesund_s"] == 599 and br.aufgeben() is False
+    br.uhr_obj.t += 1
+    br.herzschlag()
+    assert br.aufgeben() is True
+    # kurze Gesundung setzt die Uhr zurueck
+    br.befehl.info = lambda: {"signal": "acquired"}
+    br.runde()
+    assert br.herzschlag()["gesund"] is True and br.aufgeben() is False and br.ungesund_seit is None
+    br.ungesund_ende_s = 0                     # 0 = nie beenden
+    br.befehl.info = lambda: {"signal": "lost"}
+    br.herzschlag()
+    br.uhr_obj.t += 10_000
+    br.herzschlag()
+    assert br.aufgeben() is False
+
+
 def test_set_ohne_schreibweg_wird_abgelehnt(br):
     br.schreiber = lambda r, text: pytest.fail("darf nicht schreiben")
     assert br.set_befehl("151-Datum", "24.11.2026") is False         # kein eBUS-Schreibweg
@@ -181,6 +205,78 @@ def test_set_erfolg_erst_bei_passendem_rueckwert(br, monkeypatch):
     br.schreiber = lambda r, text: None
     assert br.set_befehl("P30-Min-VL-Soll", "43") is False
     assert "!=" in json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["grund"]
+
+
+def test_set_ueberbrueckt_verbindungsluecke(br):
+    # Adapter/ebusd kurz weg (transport closed, ~5 s): ERR beim Schreiben -> warten, wiederholen, Ruecklesen entscheidet
+    from ebus2mqtt.schreiben import BusFehler
+    pausen, versuche = [], []
+    br.schlaf = pausen.append
+
+    def schreiber(r, text):
+        versuche.append(text)
+        if len(versuche) < 3:
+            raise BusFehler("035004021e2a: ERR: no signal") if len(versuche) == 1 else OSError("ebusd weg")
+        br.befehl.roh[("slot", 0x1e)] = int(float(text))
+
+    br.schreiber = schreiber
+    assert br.set_befehl("P30-Min-VL-Soll", "42") is True
+    assert len(versuche) == 3 and pausen[:2] == [2, 4]
+    assert json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["ok"] is True
+    # dauerhaft weg: nach set_versuche aufgeben, mit Grund
+    versuche.clear()
+    br.schreiber = lambda r, text: (_ for _ in ()).throw(BusFehler("ERR: no signal"))
+    assert br.set_befehl("P30-Min-VL-Soll", "43") is False
+    assert "nach 4 Versuchen" in json.loads(br.mqtt.letzter("wcm/P30-Min-VL-Soll/set_status"))["grund"]
+    # Pruef-/Wertfehler (keine Busluecke) wird nicht wiederholt
+    from ebus2mqtt.schreiben import SchreibFehler
+    n = len(pausen)
+    br.schreiber = lambda r, text: (_ for _ in ()).throw(SchreibFehler("ausserhalb"))
+    assert br.set_befehl("P30-Min-VL-Soll", "44") is False and len(pausen) == n
+
+
+def test_sets_laufen_nacheinander(br):
+    import threading
+    br.schlaf = lambda s: None
+    gleichzeitig, aktiv = [], [0]
+
+    def schreiber(r, text):
+        aktiv[0] += 1
+        gleichzeitig.append(aktiv[0])
+        import time as _t
+        _t.sleep(0.05)
+        br.befehl.roh[("slot", 0x1e if r["name"].startswith("P30") else 0x1f)] = int(float(text))
+        aktiv[0] -= 1
+
+    br.schreiber = schreiber
+    t = [threading.Thread(target=br.set_befehl, args=a) for a in (("P30-Min-VL-Soll", "42"), ("P31-Max-VL-Soll", "45"))]
+    [x.start() for x in t]
+    [x.join() for x in t]
+    assert max(gleichzeitig) == 1
+
+
+def test_lesen_gedrosselt_kurzer_takt_zuerst(br):
+    br.lesen_pro_runde = 2
+    br.befehl.anfragen.clear()
+    br.runde()
+    erste = [n for n in br.befehl.anfragen if not n[1].startswith("Fachmann")]
+    assert len(erste) == 2                                    # kein Burst
+    schnell = {Q.ebusd_adresse(s)[:2] for s in br._takte["schnell"]}
+    assert set(erste) <= schnell                              # Live-Werte vor Einstellwerten
+    gesamt = sum(len(v) for v in br._takte.values())
+    for _ in range(gesamt):                                   # die Schlange laeuft leer, nichts doppelt
+        br.runde()
+    assert not br._schlange and not br._in_schlange
+    assert len([n for n in br.befehl.anfragen if not n[1].startswith("Fachmann")]) == gesamt
+
+
+def test_nach_start_keine_offline_welle(br):
+    # gedrosseltes Lesen: ungelesene Werte gelten bis FAKTOR x iv ab Start nicht als haengend
+    br.verfuegbarkeit()
+    assert br.mqtt.letzter("wcm/P30-Min-VL-Soll/available") == "online"
+    br.uhr_obj.t += 3 * 180 + 1
+    br.verfuegbarkeit()
+    assert br.mqtt.letzter("wcm/P30-Min-VL-Soll/available") == "offline"
 
 
 def test_csv_im_repo_gleich_katalog():

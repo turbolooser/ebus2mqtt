@@ -31,3 +31,4 @@ services:
       - MQTT_PREFIX=${MQTT_PREFIX:-wcm}
       - HA_DISCOVERY_PREFIX=${HA_DISCOVERY_PREFIX:-homeassistant}
       - KUMA_PUSH_URL=${KUMA_PUSH_URL:-}
+      - UNGESUND_ENDE_S=${UNGESUND_ENDE_S:-600}

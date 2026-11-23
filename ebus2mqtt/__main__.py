@@ -2,6 +2,7 @@
 import logging
 import os
 import signal
+import sys
 import threading
 import time
 
@@ -77,7 +78,9 @@ def main():
                 disc_prefix=env("HA_DISCOVERY_PREFIX", "homeassistant"), roh=env("ROH", "1") == "1",
                 kuma_url=env("KUMA_PUSH_URL"), herzdatei=env("HERZDATEI", "/tmp/ebus2mqtt.herz"),
                 schreiber=ebusd_schreiber(befehl) if env("SET_AKTIV", "1") == "1" else None,
-                verfuegbar_topic=verfuegbar, auslassen=auslassen)
+                verfuegbar_topic=verfuegbar, auslassen=auslassen,
+                ungesund_ende_s=int(env("UNGESUND_ENDE_S", "600")),
+                lesen_pro_runde=int(env("LESEN_PRO_S", "2")) or None)
     halter["b"] = b
     abos = [f"{prefix}/{n}/value" for n in auslassen]   # nur zur Anzeige im Web-Frontend
     if env("SET_AKTIV", "1") == "1":
@@ -99,10 +102,18 @@ def main():
         if time.time() >= naechstes_herz:
             b.herzschlag()
             naechstes_herz = time.time() + herz_alle
+            if b.aufgeben():
+                logging.error("seit %s s ungesund (signal=%s): beende, Docker startet neu",
+                              b.ungesund_ende_s, b.info.get("signal"))
+                code = 1
+                break
         stop.wait(1)
+    else:
+        code = 0
     mqtt.publish(verfuegbar, "offline", retain=True)
     time.sleep(1)
+    return code
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
