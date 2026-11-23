@@ -61,12 +61,13 @@ aus_basis() {
   return 1
 }
 
-# Dateien unter $1 gegen die Sperrliste; Ausgabe relativ zu $1, nie die Fundstelle selbst. $2 wie bei werkzeuge.
+# Dateien unter $1 gegen die Sperrliste; Ausgabe relativ zu $1, nie die Fundstelle selbst. $2 wie bei werkzeuge,
+# $3 = ganzes Image-Dateisystem, gegen das verglichen wird ($1 sind nur die eigenen Schichten).
 sperrliste_dateien() {
-  local wurzel=$1 basisfs=${2:-} datei rel
+  local wurzel=$1 basisfs=${2:-} imagefs=${3:-$1} datei rel
   while IFS= read -r datei; do
     rel=${datei#"$wurzel"/}
-    if aus_basis "$wurzel" "$basisfs" "$rel"; then
+    if aus_basis "$imagefs" "$basisfs" "$rel"; then
       echo "Basis (Upstream-Image unveraendert, zaehlt nicht): Sperrliste: Treffer in $rel"
     else
       fund "Sperrliste: Treffer in $rel"
@@ -184,7 +185,7 @@ image_scan() {
     echo "FEHLER: Image-Dateisystem nicht exportiert" >&2
     exit 2
   fi
-  sperrliste_dateien "$ARBEIT/eigen" "$ARBEIT/basisfs"
+  sperrliste_dateien "$ARBEIT/eigen" "$ARBEIT/basisfs" "$ARBEIT/fs"
   sperrliste_dateien "$ARBEIT/meta"
   chmod -R a+rX "$ARBEIT/fs" "$ARBEIT/meta-neu" 2>/dev/null
   werkzeuge "$ARBEIT/fs" dir "$ARBEIT/basisfs"
