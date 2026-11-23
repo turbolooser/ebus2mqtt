@@ -93,8 +93,12 @@ def pruefe_set(komp, text):
 class Bruecke:
     def __init__(self, befehl, mqtt, prefix="wcm", status_topic="ebus2mqtt/status", disc_prefix="homeassistant",
                  roh=True, kuma_url="", herzdatei="/tmp/ebus2mqtt.herz", schreiber=None, uhr=time.time,
-                 verfuegbar_topic=None, auslassen=()):
+                 verfuegbar_topic=None, auslassen=(), ungesund_ende_s=600):
         self.befehl, self.mqtt, self.prefix = befehl, mqtt, prefix
+        # Docker startet einen unhealthy Container nicht neu: nach so langer Ungesundheit beendet sich die
+        # Bruecke selbst (exit 1), restart: unless-stopped startet sie frisch. 0 = nie beenden.
+        self.ungesund_ende_s = ungesund_ende_s
+        self.ungesund_seit = None
         self.status_topic, self.disc_prefix, self.roh_an = status_topic, disc_prefix, roh
         self.kuma_url, self.herzdatei, self.uhr = kuma_url, herzdatei, uhr
         # schreiber(reading, text) -> None, wirft bei Fehler; nur fuer Readings in katalog.SCHREIBEN
@@ -296,6 +300,7 @@ class Bruecke:
             "frisch": len(self.aktiv) - len(haengend), "gesamt": len(self.aktiv), "haengend": haengend,
             "ausgelassen": sorted(self.auslassen),
             "aeltester": max(alter.items(), key=lambda x: x[1]) if alter else None,
+            "ungesund_s": int(jetzt - self.ungesund_seit) if self.ungesund_seit is not None else 0,
         }
 
     def herzschlag(self):
@@ -305,6 +310,10 @@ class Bruecke:
             self._fehler(f"ebusd info: {e}")
             self.info = {}
         self.verfuegbarkeit()
+        if self.gesund():
+            self.ungesund_seit = None
+        elif self.ungesund_seit is None:
+            self.ungesund_seit = self.uhr()
         st = self.status()
         self.mqtt.publish(self.verfuegbar_topic, "query OK" if st["gesund"] else "offline", retain=True)
         self.mqtt.publish(self.status_topic, json.dumps(st, ensure_ascii=False), retain=True)
@@ -317,6 +326,11 @@ class Bruecke:
         if self.kuma_url:
             self._kuma(st)
         return st
+
+    def aufgeben(self):
+        """True, wenn die Bruecke seit ungesund_ende_s ununterbrochen ungesund ist (Hauptschleife beendet dann)."""
+        return bool(self.ungesund_ende_s) and self.ungesund_seit is not None \
+            and self.uhr() - self.ungesund_seit >= self.ungesund_ende_s
 
     def _kuma(self, st):
         q = urllib.parse.urlencode({"status": "up" if st["gesund"] else "down",

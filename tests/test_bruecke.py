@@ -154,6 +154,30 @@ def test_status_zaehlt_arbitrierung_und_gesundheit(br):
     assert br.mqtt.letzter("wcm/status") == "offline"
 
 
+def test_dauerhaft_ungesund_beendet_bruecke(br):
+    # Docker startet unhealthy Container nicht neu: nach ungesund_ende_s (600 s) ohne Gesundung -> aufgeben()
+    br.runde()
+    assert br.herzschlag()["ungesund_s"] == 0 and br.aufgeben() is False
+    br.befehl.info = lambda: {"signal": "lost"}
+    br.uhr_obj.t += 30
+    assert br.herzschlag()["gesund"] is False and br.aufgeben() is False
+    br.uhr_obj.t += 599
+    assert br.herzschlag()["ungesund_s"] == 599 and br.aufgeben() is False
+    br.uhr_obj.t += 1
+    br.herzschlag()
+    assert br.aufgeben() is True
+    # kurze Gesundung setzt die Uhr zurueck
+    br.befehl.info = lambda: {"signal": "acquired"}
+    br.runde()
+    assert br.herzschlag()["gesund"] is True and br.aufgeben() is False and br.ungesund_seit is None
+    br.ungesund_ende_s = 0                     # 0 = nie beenden
+    br.befehl.info = lambda: {"signal": "lost"}
+    br.herzschlag()
+    br.uhr_obj.t += 10_000
+    br.herzschlag()
+    assert br.aufgeben() is False
+
+
 def test_set_ohne_schreibweg_wird_abgelehnt(br):
     br.schreiber = lambda r, text: pytest.fail("darf nicht schreiben")
     assert br.set_befehl("151-Datum", "24.11.2026") is False         # kein eBUS-Schreibweg

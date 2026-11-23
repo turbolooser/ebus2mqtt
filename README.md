@@ -51,6 +51,19 @@ plus the CSV in `ebusd/csv/`) and `ghcr.io/turbolooser/ebus2mqtt-bridge`.
 | `SET_AKTIV` | `1` | `0` = do not subscribe to any set topic |
 | `WEB_PORT` | `8097` | read-only web page; empty = off |
 | `KUMA_PUSH_URL` | – | Uptime Kuma push URL |
+| `UNGESUND_ENDE_S` | `600` | exit (code 1) after this many seconds of continuous ill health; `0` = never |
+
+## Health and restarts
+
+The bridge is *healthy* while ebusd reports `signal: acquired` and a read succeeded within the last 120 s. Health is
+visible in four places: the Docker healthcheck (heartbeat file), `/status` (200/503), `STATUS_TOPIC` (`gesund`,
+`ungesund_s`, ebusd signal, fresh/total values) and the optional Uptime Kuma push every 30 s.
+
+Docker does **not** restart a container that is merely *unhealthy*. So after `UNGESUND_ENDE_S` of continuous ill
+health the bridge publishes `offline` and exits with code 1; `restart: unless-stopped` then starts it fresh. This
+clears a stuck connection on the bridge side. ebusd reconnects to the adapter by itself; if the adapter or the bus
+stays down, the bridge keeps restarting every ~10 minutes and the status stays `offline`, which is what your alarm
+should watch.
 
 ## Values and where they come from
 
