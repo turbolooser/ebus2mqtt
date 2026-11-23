@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# pre-push-Hook: derselbe Datenschutz-Scan wie in der CI, vor jedem Push. Einrichten im Klon:
+#   ln -s ../../tools/pre-push .git/hooks/pre-push
+# Sperrliste: PRIVACY_DENYLIST_FILE, Vorgabe $HOME/.config/ebus2mqtt/privacy-denylist.
+# gitleaks + trufflehog laufen in Docker: lokal, wenn docker da ist, sonst auf einem Docker-Host ueber die Funktion
+# entfernt_ausfuehren aus pre-push.conf (fuehrt $1 dort mit bash aus; Repo und Skript kommen als tar ueber stdin).
+# Kein Ausweg ohne Scan: was nicht laeuft, blockiert den Push.
+set -euo pipefail
+
+wurzel=$(git rev-parse --show-toplevel)
+skript="$wurzel/tools/privacy-scan.sh"
+export PRIVACY_DENYLIST_FILE="${PRIVACY_DENYLIST_FILE:-$HOME/.config/ebus2mqtt/privacy-denylist}"
+konf="$HOME/.config/ebus2mqtt/pre-push.conf"
+# shellcheck disable=SC1090
+[ -r "$konf" ] && . "$konf"
+
+echo "pre-push: Datenschutz-Scan"
+if command -v docker >/dev/null 2>&1; then
+  exec "$skript" repo "$wurzel"
+fi
+
+"$skript" sperrliste "$wurzel"
+
+if ! declare -F entfernt_ausfuehren >/dev/null; then
+  echo "pre-push: FEHLER: kein docker und kein entfernt_ausfuehren, gitleaks/trufflehog koennen nicht laufen" >&2
+  exit 1
+fi
+tar -C "$wurzel" -cf - . | entfernt_ausfuehren \
+  'set -e; t=$(mktemp -d); trap "rm -rf $t" EXIT; tar -x -C $t; chmod -R a+rX $t; bash $t/tools/privacy-scan.sh werkzeuge $t git'

@@ -1,7 +1,7 @@
 # Example stack. Pin the images to a tag (and ideally a digest) instead of "main" in production.
 services:
   ebusd:
-    image: ghcr.io/turbolooser/ebus2mqtt-ebusd:main
+    image: ghcr.io/turbolooser/ebus2mqtt/ebusd:main
     restart: unless-stopped
     environment:
       - EBUSD_DEVICE=${EBUS_DEVICE}
@@ -15,7 +15,7 @@ services:
     # port 8888 stays inside the compose network (ebusd runs with --enablehex)
 
   ebus-bridge:
-    image: ghcr.io/turbolooser/ebus2mqtt-bridge:main
+    image: ghcr.io/turbolooser/ebus2mqtt/bridge:main
     restart: unless-stopped
     depends_on:
       - ebusd
