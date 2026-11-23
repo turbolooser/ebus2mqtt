@@ -88,8 +88,8 @@ docker compose -f docker-compose.example.yml up -d
 # Web-Seite: http://<docker-host>:8097/
 ```
 
-Images (von der CI gebaut, Tag `sha-<commit>`): `ghcr.io/turbolooser/ebus2mqtt-ebusd` (offizielles
-`john30/ebusd` v26.1 plus die CSV aus `ebusd/csv/`) und `ghcr.io/turbolooser/ebus2mqtt-bridge`. Im Betrieb ein
+Images (von der CI gebaut, Tag `sha-<commit>`): `ghcr.io/turbolooser/ebus2mqtt/ebusd` (offizielles
+`john30/ebusd` v26.1 plus die CSV aus `ebusd/csv/`) und `ghcr.io/turbolooser/ebus2mqtt/bridge`. Im Betrieb ein
 festes Tag, besser einen Digest pinnen statt `main`.
 
 Abnahme nach dem Start: Web-Seite zeigt alle Werte frisch, `ebus2mqtt/status` meldet `"gesund": true` und
@@ -252,6 +252,13 @@ python3 -m pytest                                  # Umrechnungen gegen echte Bu
 python3 tools/ebusd_inject_test.py <ebusd-image>   # die CSV dekodiert im echten ebusd (läuft in der CI)
 ```
 
+**Datenschutz-Scan** (`tools/privacy-scan.sh`): Die CI prüft auf jedem PR das Repo samt Historie und jedes gebaute
+Image (eigene Schichten, ENV, Labels, History, ganzes Dateisystem) mit gitleaks, trufflehog und einer Sperrliste
+persönlicher Daten. Die Sperrliste steht als Actions-Secret `PRIVACY_DENYLIST` bereit (ein regulärer Ausdruck je Zeile)
+und nie im Repo. Ein Fund bricht den Lauf ab, gemeldet wird nur der Ort. Gepusht wird genau das gescannte Image.
+Lokal derselbe Scan als Hook: `ln -s ../../tools/pre-push .git/hooks/pre-push`, Sperrliste in
+`~/.config/ebus2mqtt/privacy-denylist`.
+
 <a id="de-lizenz"></a>
 ## Dank und Lizenz
 
@@ -344,8 +351,8 @@ docker compose -f docker-compose.example.yml up -d
 # web page: http://<docker-host>:8097/
 ```
 
-Images (built by CI, tagged `sha-<commit>`): `ghcr.io/turbolooser/ebus2mqtt-ebusd` (official `john30/ebusd` v26.1
-plus the CSV in `ebusd/csv/`) and `ghcr.io/turbolooser/ebus2mqtt-bridge`. In production pin a tag, better a digest,
+Images (built by CI, tagged `sha-<commit>`): `ghcr.io/turbolooser/ebus2mqtt/ebusd` (official `john30/ebusd` v26.1
+plus the CSV in `ebusd/csv/`) and `ghcr.io/turbolooser/ebus2mqtt/bridge`. In production pin a tag, better a digest,
 instead of `main`.
 
 Acceptance after start: the web page shows every value fresh, `ebus2mqtt/status` reports `"gesund": true` and
@@ -508,6 +515,13 @@ pip install -r requirements.txt pytest
 python3 -m pytest                                  # conversions checked against real bus data
 python3 tools/ebusd_inject_test.py <ebusd-image>   # the CSV decodes in real ebusd (runs in CI)
 ```
+
+**Privacy scan** (`tools/privacy-scan.sh`): on every PR the CI checks the repo including its history and every built
+image (own layers, ENV, labels, history, the whole filesystem) with gitleaks, trufflehog and a denylist of personal
+data. The denylist is the Actions secret `PRIVACY_DENYLIST` (one regular expression per line) and never in the repo.
+A finding fails the run and only the location is reported. Exactly the scanned image is pushed. Locally the same
+scan runs as a hook: `ln -s ../../tools/pre-push .git/hooks/pre-push`, denylist in
+`~/.config/ebus2mqtt/privacy-denylist`.
 
 <a id="en-license"></a>
 ## Credits and license

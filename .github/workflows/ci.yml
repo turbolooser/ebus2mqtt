@@ -1,8 +1,10 @@
 name: ci
 
-# Tests (Python + ebusd laedt und dekodiert die CSV), dann beide Images nach ghcr.io:
-#   ghcr.io/turbolooser/ebus2mqtt-bridge:sha-<kurz>   ghcr.io/turbolooser/ebus2mqtt-ebusd:sha-<kurz>
+# Tests (Python + ebusd laedt und dekodiert die CSV) und Datenschutz-Scan, dann beide Images nach ghcr.io:
+#   ghcr.io/turbolooser/ebus2mqtt/bridge:sha-<kurz>   ghcr.io/turbolooser/ebus2mqtt/ebusd:sha-<kurz>
 # Kein latest: der Compose-Stack pinnt sha-<kurz>, ein Push deployt nichts.
+# Datenschutz (tools/privacy-scan.sh, Secret PRIVACY_DENYLIST): Repo und jedes Image auf jedem PR und vor jedem
+# Push; ein Fund bricht ab. Gepusht wird genau das gescannte Image.
 on:
   push:
     branches: [main]
@@ -39,9 +41,18 @@ jobs:
           ! grep -q "ERR" check.log
       - run: python3 tools/ebusd_inject_test.py ebusd-test
 
+  datenschutz-repo:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: tools/privacy-scan.sh repo .
+        env:
+          PRIVACY_DENYLIST: ${{ secrets.PRIVACY_DENYLIST }}
+
   images:
-    needs: [tests, ebusd-csv]
-    if: github.event_name != 'pull_request'
+    needs: [tests, ebusd-csv, datenschutz-repo]
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -49,15 +60,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/turbolooser/ebus2mqtt-${{ matrix.teil }}
+          images: ghcr.io/turbolooser/ebus2mqtt/${{ matrix.teil }}
           flavor: latest=false
           tags: |
             type=sha,prefix=sha-,format=short
@@ -66,8 +72,27 @@ jobs:
         with:
           context: .
           file: docker/${{ matrix.teil }}.Dockerfile
-          push: true
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.teil }}
           cache-to: type=gha,mode=max,scope=${{ matrix.teil }}
+      - name: Datenschutz-Scan des Images
+        run: |
+          basis=$(awk '/^FROM /{print $2; exit}' docker/${{ matrix.teil }}.Dockerfile)
+          tools/privacy-scan.sh image "${{ fromJSON(steps.meta.outputs.json).tags[0] }}" "$basis"
+        env:
+          PRIVACY_DENYLIST: ${{ secrets.PRIVACY_DENYLIST }}
+      - if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Gescanntes Image pushen
+        if: github.event_name != 'pull_request'
+        run: |
+          while IFS= read -r tag; do docker push -q "$tag"; done <<< "$TAGS"
+          docker image inspect --format '{{join .RepoDigests "\n"}}' "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
