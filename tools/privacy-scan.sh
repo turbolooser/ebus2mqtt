@@ -42,11 +42,35 @@ sperrliste_laden() {
   echo "Sperrliste: $n Regeln"
 }
 
-# Dateien unter $1 gegen die Sperrliste; Ausgabe relativ zu $1, nie die Fundstelle selbst
+# Stammt $3 (relativ zu $1) unveraendert aus dem Basis-Image $2? Bytegleich dort, oder eine .pyc, deren Quelle
+# bytegleich dort liegt (pip kompiliert beim Build Upstream-Module).
+aus_basis() {
+  local dir=$1 basisfs=$2 datei=$3 quelle
+  [ -n "$basisfs" ] || return 1
+  [ -L "$dir/$datei" ] && return 1
+  if [ -f "$basisfs/$datei" ] && cmp -s "$dir/$datei" "$basisfs/$datei"; then
+    return 0
+  fi
+  case "$datei" in
+    */__pycache__/*.cpython-*.pyc)
+      quelle="${datei%/__pycache__/*}/$(basename "$datei" | sed 's/\.cpython-[0-9]*\.pyc$/.py/')"
+      [ -f "$dir/$quelle" ] && [ -f "$basisfs/$quelle" ] && cmp -s "$dir/$quelle" "$basisfs/$quelle"
+      return
+      ;;
+  esac
+  return 1
+}
+
+# Dateien unter $1 gegen die Sperrliste; Ausgabe relativ zu $1, nie die Fundstelle selbst. $2 wie bei werkzeuge.
 sperrliste_dateien() {
-  local wurzel=$1 datei
+  local wurzel=$1 basisfs=${2:-} datei rel
   while IFS= read -r datei; do
-    fund "Sperrliste: Treffer in ${datei#"$wurzel"/}"
+    rel=${datei#"$wurzel"/}
+    if aus_basis "$wurzel" "$basisfs" "$rel"; then
+      echo "Basis (Upstream-Image unveraendert, zaehlt nicht): Sperrliste: Treffer in $rel"
+    else
+      fund "Sperrliste: Treffer in $rel"
+    fi
   done < <(grep -rlaiE -f "$ARBEIT/sperrliste" "$wurzel" 2>/dev/null)
 }
 
@@ -70,8 +94,8 @@ sperrliste_repo() {
 }
 
 # gitleaks + trufflehog in Docker; modus git (Historie) oder dir (Dateisystem). Nur Ort und Regel ausgeben.
-# Optional $3 = Dateisystem des Basis-Images: ein Fund in einer Datei, die dort bytegleich liegt, stammt aus dem
-# oeffentlichen Upstream-Image und zaehlt nicht (wird aber genannt). Alles Eigene oder Geaenderte zaehlt.
+# Optional $3 = Dateisystem des Basis-Images: ein Fund in einer Datei, die unveraendert von dort stammt (aus_basis),
+# kommt aus dem oeffentlichen Upstream-Image und zaehlt nicht (wird aber genannt). Alles Eigene oder Geaenderte zaehlt.
 werkzeuge() {
   local dir modus=$2 basisfs=${3:-} aus
   dir=$(cd "$1" && pwd)
@@ -113,8 +137,8 @@ werkzeuge() {
 
 werkzeug_fund() {
   local dir=$1 basisfs=$2 datei=$3 text=$4
-  if [ -n "$basisfs" ] && [ -f "$basisfs/$datei" ] && [ ! -L "$dir/$datei" ] && cmp -s "$dir/$datei" "$basisfs/$datei"; then
-    echo "Basis (bytegleich im Upstream-Image, zaehlt nicht): $text"
+  if aus_basis "$dir" "$basisfs" "$datei"; then
+    echo "Basis (Upstream-Image unveraendert, zaehlt nicht): $text"
   else
     fund "$text"
   fi
@@ -138,8 +162,16 @@ image_scan() {
     tar -x --no-same-owner --no-same-permissions -f "$ARBEIT/tar/$s" -C "$ARBEIT/eigen" 2>/dev/null
   done
   echo "Image $img: $n_eigen eigene von ${#schichten[@]} Schichten, $(wc -l < "$ARBEIT/meta/dateiliste.txt") Eintraege"
+  # Metadaten: die Sperrliste sieht alles, gitleaks/trufflehog nur, was gegenueber der Basis neu ist (die
+  # Python-Basis setzt z. B. ENV GPG_KEY, den oeffentlichen Signaturschluessel der Release-Manager)
+  mkdir -p "$ARBEIT/meta-neu"
   docker image inspect "$img" --format '{{json .Config}}' | jq . > "$ARBEIT/meta/config.json"
   docker history --no-trunc --format '{{.CreatedBy}} {{.Comment}}' "$img" > "$ARBEIT/meta/history.txt"
+  docker image inspect "$basis" --format '{{json .Config}}' | jq . > "$ARBEIT/basis-config.json"
+  docker history --no-trunc --format '{{.CreatedBy}} {{.Comment}}' "$basis" > "$ARBEIT/basis-history.txt"
+  grep -vxF -f "$ARBEIT/basis-config.json" "$ARBEIT/meta/config.json" > "$ARBEIT/meta-neu/config.txt"
+  grep -vxF -f "$ARBEIT/basis-history.txt" "$ARBEIT/meta/history.txt" > "$ARBEIT/meta-neu/history.txt"
+  echo "Metadaten neu gegenueber Basis: $(wc -l < "$ARBEIT/meta-neu/config.txt") Config-, $(wc -l < "$ARBEIT/meta-neu/history.txt") History-Zeilen"
   local cid
   cid=$(docker create "$img")
   docker export "$cid" | tar -x --no-same-owner --no-same-permissions -C "$ARBEIT/fs" --exclude='dev/*' 2>/dev/null
@@ -152,11 +184,11 @@ image_scan() {
     echo "FEHLER: Image-Dateisystem nicht exportiert" >&2
     exit 2
   fi
-  sperrliste_dateien "$ARBEIT/eigen"
+  sperrliste_dateien "$ARBEIT/eigen" "$ARBEIT/basisfs"
   sperrliste_dateien "$ARBEIT/meta"
-  chmod -R a+rX "$ARBEIT/fs" "$ARBEIT/meta" 2>/dev/null
+  chmod -R a+rX "$ARBEIT/fs" "$ARBEIT/meta-neu" 2>/dev/null
   werkzeuge "$ARBEIT/fs" dir "$ARBEIT/basisfs"
-  werkzeuge "$ARBEIT/meta" dir
+  werkzeuge "$ARBEIT/meta-neu" dir
 }
 
 case "${1:-}" in
