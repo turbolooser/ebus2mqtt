@@ -70,8 +70,10 @@ sperrliste_repo() {
 }
 
 # gitleaks + trufflehog in Docker; modus git (Historie) oder dir (Dateisystem). Nur Ort und Regel ausgeben.
+# Optional $3 = Dateisystem des Basis-Images: ein Fund in einer Datei, die dort bytegleich liegt, stammt aus dem
+# oeffentlichen Upstream-Image und zaehlt nicht (wird aber genannt). Alles Eigene oder Geaenderte zaehlt.
 werkzeuge() {
-  local dir modus=$2 aus
+  local dir modus=$2 basisfs=${3:-} aus
   dir=$(cd "$1" && pwd)
   aus=$(mktemp -d)
   chmod 777 "$aus"
@@ -97,15 +99,25 @@ werkzeuge() {
     tail -5 "$aus/th.err" >&2
     exit 2
   fi
-  while IFS= read -r z; do fund "gitleaks: $z"; done < <(jq -r '.[] |
-    "Treffer in \(.File | sub("^/scan/"; ""))\(if .Commit != "" then " (Commit \(.Commit))" else "" end), Regel \(.RuleID)"' \
-    "$aus/gitleaks.json")
-  while IFS= read -r z; do fund "trufflehog: $z"; done < <(jq -r 'select(.DetectorName) |
-    (.SourceMetadata.Data.Git // .SourceMetadata.Data.Filesystem // {}) as $m |
-    "Treffer in \(($m.file // "?") | sub("^/scan/"; ""))\(if $m.commit then " (Commit \($m.commit))" else "" end), Detektor \(.DetectorName)"' \
-    "$aus/th.json")
+  local datei text
+  while IFS=$'\t' read -r datei text; do werkzeug_fund "$dir" "$basisfs" "$datei" "gitleaks: Treffer in $datei$text"
+  done < <(jq -r '.[] | [(.File | sub("^/scan/"; "")),
+    "\(if .Commit != "" then " (Commit \(.Commit))" else "" end), Regel \(.RuleID)"] | @tsv' "$aus/gitleaks.json")
+  while IFS=$'\t' read -r datei text; do werkzeug_fund "$dir" "$basisfs" "$datei" "trufflehog: Treffer in $datei$text"
+  done < <(jq -r 'select(.DetectorName) | (.SourceMetadata.Data.Git // .SourceMetadata.Data.Filesystem // {}) as $m |
+    [(($m.file // "?") | sub("^/scan/"; "")),
+    "\(if $m.commit then " (Commit \($m.commit))" else "" end), Detektor \(.DetectorName)"] | @tsv' "$aus/th.json")
   echo "gitleaks + trufflehog ($modus): $(jq length "$aus/gitleaks.json") + $(grep -c DetectorName "$aus/th.json") Funde"
   rm -rf "$aus"
+}
+
+werkzeug_fund() {
+  local dir=$1 basisfs=$2 datei=$3 text=$4
+  if [ -n "$basisfs" ] && [ -f "$basisfs/$datei" ] && [ ! -L "$dir/$datei" ] && cmp -s "$dir/$datei" "$basisfs/$datei"; then
+    echo "Basis (bytegleich im Upstream-Image, zaehlt nicht): $text"
+  else
+    fund "$text"
+  fi
 }
 
 image_scan() {
@@ -132,14 +144,18 @@ image_scan() {
   cid=$(docker create "$img")
   docker export "$cid" | tar -x --no-same-owner --no-same-permissions -C "$ARBEIT/fs" --exclude='dev/*' 2>/dev/null
   docker rm "$cid" >/dev/null
-  if [ "$(find "$ARBEIT/fs" -type f | head -50 | wc -l)" -lt 50 ]; then
+  mkdir -p "$ARBEIT/basisfs"
+  cid=$(docker create "$basis")
+  docker export "$cid" | tar -x --no-same-owner --no-same-permissions -C "$ARBEIT/basisfs" --exclude='dev/*' 2>/dev/null
+  docker rm "$cid" >/dev/null
+  if [ "$(find "$ARBEIT/fs" -type f 2>/dev/null | head -50 | wc -l)" -lt 50 ]; then
     echo "FEHLER: Image-Dateisystem nicht exportiert" >&2
     exit 2
   fi
   sperrliste_dateien "$ARBEIT/eigen"
   sperrliste_dateien "$ARBEIT/meta"
   chmod -R a+rX "$ARBEIT/fs" "$ARBEIT/meta" 2>/dev/null
-  werkzeuge "$ARBEIT/fs" dir
+  werkzeuge "$ARBEIT/fs" dir "$ARBEIT/basisfs"
   werkzeuge "$ARBEIT/meta" dir
 }
 
