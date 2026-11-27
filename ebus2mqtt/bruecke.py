@@ -13,6 +13,7 @@ Dazu STATUS_TOPIC (Vorgabe ebus2mqtt/status): JSON mit Alter, Fehlern, verlorene
 import heapq
 import json
 import logging
+import math
 import os
 import re
 import threading
@@ -84,6 +85,8 @@ def pruefe_set(komp, text):
         v = float(text)
     except ValueError:
         return (False, f"keine Zahl: {text}")
+    if not math.isfinite(v):
+        return (False, f"keine endliche Zahl: {text}")
     if "min" in komp and v < komp["min"]:
         return (False, f"{v} < min {komp['min']}")
     if "max" in komp and v > komp["max"]:
@@ -175,8 +178,8 @@ class Bruecke:
                 roh = {t: self.roh[t][0] for t in teile}
             try:
                 text = Q.wert(r, roh)
-            except (ValueError, IndexError, KeyError) as e:
-                self._fehler(f"Umrechnung {r['name']}: {e}")
+            except Exception as e:  # noqa: BLE001 - ein Wandlerfehler kostet nur dieses Reading, nie die Bruecke
+                self._fehler(f"Umrechnung {r['name']}: {e!r}")
                 continue
             if text is None:
                 continue
@@ -203,6 +206,8 @@ class Bruecke:
             self.roh_setzen(sch, Q.roh_parsen(sch, werte), ts)
         except ValueError:
             pass
+        except Exception as e:  # noqa: BLE001 - laeuft im Lauscher-Thread: eine Ausnahme beendete ihn still
+            self._fehler(f"listen {circuit} {name}: {e!r}")
 
     def fremd_wert(self, name, text):
         """wcm/<name>/value eines ausgelassenen Readings (von wcm2mqtt) fuer das Web-Frontend merken."""
@@ -233,11 +238,14 @@ class Bruecke:
         except OSError as e:
             self._fehler(f"ebusd nicht erreichbar: {e}")
             return False
+        except Exception as e:  # noqa: BLE001 - unerwartete Antwort des Clients: nur dieser Read faellt aus
+            self._fehler(f"lesen {name}: {e!r}")
+            return False
         try:
             roh = Q.roh_parsen(sch, text)
         except ValueError:
-            # ebusd liefert "-" fuer einen ungueltigen Wert (Regler antwortet mit 0x8000): nur dieses Reading
-            # bleibt stehen, die Bruecke laeuft weiter (27.11.2026: Reg 2572 liess sie im Kreis neu starten)
+            # passt nicht zum Datentyp (leer, Text, Ueberlauf, Felder): nur dieses Reading bleibt stehen, die Bruecke
+            # laeuft weiter (27.11.2026: int('-') liess sie im Kreis neu starten; "-" selbst ist der Ersatzwert)
             self._fehler(f"ungueltiger Wert {Q.roh_name(sch)}: {text[:20]!r}")
             return False
         self.lesungen += 1
@@ -267,7 +275,12 @@ class Bruecke:
         if not m or m.group(2) == self._bc_lastup:
             return False
         self._bc_lastup = m.group(2)
-        self.roh_setzen(("bc",), Q.roh_parsen(("bc",), m.group(1)), self.uhr())
+        try:
+            roh = Q.roh_parsen(("bc",), m.group(1))
+        except ValueError:
+            self._fehler(f"ungueltiger Wert {Q.roh_name(('bc',))}: {m.group(1)[:20]!r}")
+            return False
+        self.roh_setzen(("bc",), roh, self.uhr())
         return True
 
     def runde(self):
@@ -293,6 +306,18 @@ class Bruecke:
         if self.faellig.get("eeprom", 0) <= jetzt:
             self.faellig["eeprom"] = jetzt + K.TAKT["eeprom"]
             self.eeprom()
+
+    def sicher(self, schritt):
+        """Schritt der Hauptschleife; eine unerwartete Ausnahme beendet die Bruecke nicht (sonst Neustartschleife wie
+        27.11.2026), sondern zaehlt unter fehler und steht einmal mit Traceback im Log."""
+        try:
+            return schritt()
+        except Exception as e:  # noqa: BLE001
+            kurz = f"Hauptschleife {schritt.__name__}: {e!r}"
+            if kurz.split(",")[0][:60] not in self.fehler:
+                LOG.exception("%s", kurz)
+            self._fehler(kurz)
+            return None
 
     # ---------------------------------------------------------------- Zustand
     def verfuegbarkeit(self):
@@ -381,7 +406,10 @@ class Bruecke:
         if self.schreiber is None:
             return self._set_antwort(name, False, "Schreiben gesperrt: kein Schreiber konfiguriert")
         with self.set_lock:
-            return self._schreiben_und_pruefen(name, r, text)
+            try:
+                return self._schreiben_und_pruefen(name, r, text)
+            except Exception as e:  # noqa: BLE001 - HA bekommt immer eine Antwort, der Set-Thread endet nie stumm
+                return self._set_antwort(name, False, f"Fehler: {e!r}")
 
     def _schreiben_und_pruefen(self, name, r, text):
         warte = 2

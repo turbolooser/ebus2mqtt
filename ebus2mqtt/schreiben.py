@@ -8,6 +8,7 @@ Quelle ist die Master-Adresse von ebusd (EBUSD_ADDRESS). Erfolg prueft die Bruec
   uebernimmt aber nur von ff (Test 23.11.2026 17:40: 413 -> 20,0 von 31 nicht uebernommen).
 """
 import json
+import math
 
 from . import katalog as K
 from . import wandler as W
@@ -24,9 +25,12 @@ class BusFehler(SchreibFehler):
 
 def _zahl(text):
     try:
-        return float(text)
+        v = float(text)
     except ValueError:
         raise SchreibFehler(f"keine Zahl: {text}")
+    if not math.isfinite(v):
+        raise SchreibFehler(f"keine endliche Zahl: {text}")
+    return v
 
 
 def _code(karte, text):
@@ -47,7 +51,10 @@ def register(info_nr, raw):
 
 
 def _viertel(t):
-    h, m = (int(x) for x in t.split(":"))
+    try:
+        h, m = (int(x) for x in t.split(":"))
+    except (AttributeError, ValueError):
+        raise SchreibFehler(f"keine Uhrzeit HH:MM: {t!r}")
     if not (0 <= h <= 24 and m in (0, 15, 30, 45)) or h * 4 + m // 15 > 96:
         raise SchreibFehler(f"Uhrzeit nicht im Viertelstundenraster: {t}")
     return h * 4 + m // 15
@@ -63,6 +70,8 @@ def zeitprogramm(text):
         raise SchreibFehler("hoechstens 3 Fenster")
     regs = []
     for f in fenster:
+        if not isinstance(f, dict) or "from" not in f or "to" not in f:
+            raise SchreibFehler(f"Fenster ohne from/to: {f!r}")
         a, e = _viertel(f["from"]), _viertel(f["to"])
         if a >= e:
             raise SchreibFehler(f"Fenster {f['from']}-{f['to']} leer oder verkehrt")

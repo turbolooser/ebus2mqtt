@@ -20,6 +20,17 @@ def reg_name(n):
     return f"R{n}"
 
 
+def datentyp(sch):
+    """ebusd-Datentyp des Feldes "wert" je Quell-Schluessel ('slot', s) | ('reg', n): Slot 0x00-0x7f 1 Byte,
+    0x80-0xff 16 bit, mit Vorzeichen laut SLOTS; Register immer UIN."""
+    if sch[0] == "reg":
+        return "UIN"
+    vz = K.SLOTS[sch[1]][2] if sch[1] in K.SLOTS else False
+    if sch[1] < 0x80:
+        return "SCH" if vz else "UCH"
+    return "SIN" if vz else "UIN"
+
+
 def _k(t):
     """Kommentar ohne Kommas (CSV-Trenner)."""
     return t.replace(",", ".")
@@ -31,14 +42,12 @@ def zeilen():
     for s in K.KANDIDAT_SLOTS:
         alle.setdefault(s, (f"S{s:02x}", "Kandidat, Bedeutung offen", False, False))
     for s in sorted(alle):
-        name, kommentar, vz, _ = alle[s]
-        if s < 0x80:
-            typ = "SCH" if vz else "UCH"
-        else:
-            typ = "SIN" if vz else "UIN"
+        name, kommentar, _, _ = alle[s]
+        typ = datentyp(("slot", s))
         out.append(f"r,wtc,{name},{_k(kommentar)} (Slot {s:02x}),,08,5003,{s:02x},typ,s,UCH,,,,wert,s,{typ},,,")
     for n in sorted(K.REG):
-        out.append(f"r,hk1,{reg_name(n)},{_k(K.REG[n])} (infoNr {n}),,35,5022,{register_id(n)},wert,s,UIN,,,")
+        typ = datentyp(("reg", n))
+        out.append(f"r,hk1,{reg_name(n)},{_k(K.REG[n])} (infoNr {n}),,35,5022,{register_id(n)},wert,s,{typ},,,")
     for circ, name, qq, zz, pbsb, laenge in (K.BC_STATUS, K.BC_REGLER):
         out.append(f"u,{circ},{name},Broadcast {qq}->{zz} {pbsb} roh,{qq},{zz},{pbsb},,daten,,HEX:{laenge},,,")
     return out

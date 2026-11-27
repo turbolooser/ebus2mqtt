@@ -98,9 +98,9 @@ def main():
     naechstes_herz = 0.0
     logging.info("ebus2mqtt gestartet: prefix=%s ebusd=%s:%s", prefix, befehl.host, befehl.port)
     while not stop.is_set():
-        b.runde()
+        b.sicher(b.runde)
         if time.time() >= naechstes_herz:
-            b.herzschlag()
+            b.sicher(b.herzschlag)
             naechstes_herz = time.time() + herz_alle
             if b.aufgeben():
                 logging.error("seit %s s ungesund (signal=%s): beende, Docker startet neu",

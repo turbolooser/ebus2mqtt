@@ -100,5 +100,7 @@ def conv_timeprogram(regs):
         hi, lo = _hl(raw)
         if hi == 0x80 or lo == 0x80:
             continue
+        if hi > 96 or lo > 96:  # mehr als 24:00 ist keine Uhrzeit: ganzes Programm ungueltig, nichts raten
+            return NV
         out.append({"from": _viertel(hi), "to": _viertel(lo)})
     return json.dumps(out, separators=(",", ":"))

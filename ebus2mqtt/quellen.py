@@ -1,7 +1,19 @@
 """Quellen eines Readings (welche ebusd-Messages) und Umrechnung der Rohwerte in den MQTT-Text."""
+import re
+
 from . import katalog as K
 from . import wandler as W
-from .csvgen import reg_name, slot_name
+from .csvgen import datentyp, reg_name, slot_name
+
+# ebusd-Zahlentypen (Wiki 4.3 "Builtin data types"): gueltiger Bereich und der ausgesparte Ersatzwert, den ebusd
+# als "-" ausgibt. "-" ist darum kein Lesefehler, sondern genau dieser Rohwert: 27.11.2026 02:27 lieferte Reg 2572
+# (I12, UIN, x0,1) "-" = 0xffff = -0,1 Grad, nachdem I12 von 0,1 auf 0 gefallen war (HA-Verlauf).
+TYPEN = {"UCH": (0, 254, 0xFF), "SCH": (-127, 127, -128), "UIN": (0, 65534, 0xFFFF), "SIN": (-32767, 32767, -32768)}
+ZAHL = re.compile(r"-?[0-9]+")
+HEXBYTE = re.compile(r"[0-9a-fA-F]{2}")
+# Nur fuer die vorzeichenbehafteten 16-bit-Wandler ist der UIN-Ersatzwert 0xffff ein echter Wert (-1 Zehntel); fuer
+# Zahlen, Karten, Datum, Uhrzeit, Zeitprogramm und conv_calc2 (ohne Vorzeichen) heisst er "kein Wert".
+ERSATZ_IST_WERT = ("conv_temp", "conv_temp2")
 
 
 def schluessel(quelle):
@@ -29,11 +41,34 @@ def ebusd_adresse(sch):
     raise ValueError(sch)
 
 
+def ersatzwert(sch):
+    """Rohwert, den ebusd fuer diesen Schluessel als "-" ausgibt (None fuer Broadcasts: HEX hat keinen)."""
+    return None if sch[0] == "bc" else TYPEN[datentyp(sch)][2]
+
+
 def roh_parsen(sch, text):
-    """ebusd-Text -> Rohwert: int fuer Slot/Register, Liste von Bytes fuer Broadcasts."""
+    """ebusd-Text -> Rohwert: int fuer Slot/Register, Liste von Bytes fuer Broadcasts. Alles, was nicht genau dem
+    Datentyp entspricht (leer, Text, Komma, Ueberlauf, Felder zu viel/zu wenig), ist ValueError: das Reading bleibt
+    stehen, es wird kein Wert geraten."""
     if sch[0] == "bc":
-        return [int(x, 16) for x in text.split()]
-    return int(text.split(";")[-1])
+        teile = text.split()
+        if not teile or not all(HEXBYTE.fullmatch(x) for x in teile):
+            raise ValueError(f"kein HEX-Bytefeld: {text[:40]!r}")
+        return [int(x, 16) for x in teile]
+    felder = text.split(";")
+    # read ... wert liefert ein Feld; listen liefert die ganze Message (Slot: typ;wert, Register: wert)
+    if len(felder) > (2 if sch[0] == "slot" else 1):
+        raise ValueError(f"{len(felder)} Felder: {text[:40]!r}")
+    roh = felder[-1].strip()
+    lo, hi, ersatz = TYPEN[datentyp(sch)]
+    if roh == "-":
+        return ersatz
+    if not ZAHL.fullmatch(roh):
+        raise ValueError(f"keine ganze Zahl: {text[:40]!r}")
+    v = int(roh)
+    if not lo <= v <= hi:
+        raise ValueError(f"{v} ausserhalb {datentyp(sch)} {lo}..{hi}")
+    return v
 
 
 def wert(reading, roh):
@@ -52,6 +87,8 @@ def wert(reading, roh):
         daten = werte[0]
         return W.conv_map(daten[1], w[1]) if len(daten) > 1 else W.NV
     art = w[0]
+    if art not in ERSATZ_IST_WERT and any(v == ersatzwert(t) for v, t in zip(werte, schluessel(q))):
+        return W.NV
     if art == "zahl":
         return W.zahl(werte[0] * w[1], w[2])
     if art == "lowbyte":
