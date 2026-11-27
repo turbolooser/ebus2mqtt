@@ -233,10 +233,17 @@ class Bruecke:
         except OSError as e:
             self._fehler(f"ebusd nicht erreichbar: {e}")
             return False
+        try:
+            roh = Q.roh_parsen(sch, text)
+        except ValueError:
+            # ebusd liefert "-" fuer einen ungueltigen Wert (Regler antwortet mit 0x8000): nur dieses Reading
+            # bleibt stehen, die Bruecke laeuft weiter (27.11.2026: Reg 2572 liess sie im Kreis neu starten)
+            self._fehler(f"ungueltiger Wert {Q.roh_name(sch)}: {text[:20]!r}")
+            return False
         self.lesungen += 1
         self.dauern = (self.dauern + [dauer])[-200:]
         self.letztes_ok = self.uhr()
-        self.roh_setzen(sch, Q.roh_parsen(sch, text), self.uhr())
+        self.roh_setzen(sch, roh, self.uhr())
         return True
 
     def eeprom(self):

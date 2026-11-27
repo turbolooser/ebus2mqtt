@@ -270,6 +270,17 @@ def test_lesen_gedrosselt_kurzer_takt_zuerst(br):
     assert len([n for n in br.befehl.anfragen if not n[1].startswith("Fachmann")]) == gesamt
 
 
+def test_ungueltiger_wert_stoppt_nur_dieses_reading(br):
+    # ebusd antwortet "-" (Regler: 0x8000); das darf die Bruecke nicht beenden (Absturzschleife 27.11.2026)
+    sch = ("reg", 2572)
+    orig = br.befehl.lesen
+    br.befehl.lesen = lambda c, n, f=None, frisch=True: ("-", 0.1) if (c, n) == Q.ebusd_adresse(sch)[:2] else orig(c, n, f)
+    assert br.lese(sch) is False
+    assert sch not in br.roh
+    assert any("ungueltiger Wert" in k for k in br.fehler)
+    assert br.lese(("slot", 0x1e)) in (True, False)           # andere Reads laufen weiter
+
+
 def test_nach_start_keine_offline_welle(br):
     # gedrosseltes Lesen: ungelesene Werte gelten bis FAKTOR x iv ab Start nicht als haengend
     br.verfuegbarkeit()
